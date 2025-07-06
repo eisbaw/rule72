@@ -1,8 +1,8 @@
 # Rust build artifacts
-/commit-reflow/target/
-/commit-reflow/.cargo/
+/rule72/target/
+/rule72/.cargo/
 # dependency lockfile can be committed if desired; ignore locally
-/commit-reflow/Cargo.lock
+/rule72/Cargo.lock
 
 # Nix shell garbage
 /result

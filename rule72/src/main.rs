@@ -2,7 +2,7 @@ use std::io::{self, Read};
 
 use clap::Parser;
 
-use commit_reflow::{reflow, Options};
+use rule72::{reflow, Options};
 
 /// Reflow git commit messages.
 #[derive(Parser, Debug)]

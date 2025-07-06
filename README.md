@@ -1,4 +1,4 @@
-# Commit-Reflow
+# Rule72
 
 Smart command-line formatter that rewraps Git commit messages while **preserving structure** (headline, paragraphs, nested lists, tables, code blocks, footers, emoji bullets, etc.).  It reads from **stdin** and writes the reformatted message to **stdout** so it plugs into editors, Git hooks, pipes, or batch jobs.
 
@@ -16,10 +16,10 @@ Smart command-line formatter that rewraps Git commit messages while **preserving
 
 ```bash
 # Rewrap the current COMMIT_EDITMSG from a Git hook
-cat "$1" | commit-reflow > "$1.tmp" && mv "$1.tmp" "$1"
+cat "$1" | rule72 > "$1.tmp" && mv "$1.tmp" "$1"
 
 # Ad-hoc from shell
-printf '%s\n' "fix: extremely long headline ..." | commit-reflow
+printf '%s\n' "fix: extremely long headline ..." | rule72
 
 # Batch-reformat repository message corpus (Justfile target)
 just reflow-data   # Creates data.out/ mirrored directory
@@ -36,7 +36,7 @@ CLI flags:
 ---
 ## Test-Catalogue: `data/` vs `data.out/`
 
-The repo ships with a large set of real-world commit messages under `data/`.  Running `just reflow-data` pipes every `*.txt` file through `commit-reflow`, writing the result to **identical relative paths** under `data.out/`.  `just compare-data` opens a unified diff (`colordiff | less -SNR`) so you can inspect:
+The repo ships with a large set of real-world commit messages under `data/`.  Running `just reflow-data` pipes every `*.txt` file through `rule72`, writing the result to **identical relative paths** under `data.out/`.  `just compare-data` opens a unified diff (`colordiff | less -SNR`) so you can inspect:
 
 * Correct wrapping of long paragraphs
 * List continuation alignment and nested bullets
@@ -72,7 +72,7 @@ Build tooling via **Nix** + **Just** (`shell.nix`, `Justfile`).
 ---
 ## Related Tools
 
-* [`commitmsgfmt`](https://mkjeldsen.gitlab.io/blog/introducing-commitmsgfmt/) – Vim filter that inspired many rules; `commit-reflow` generalises with rectangle parser & Rust CLI.
+* [`commitmsgfmt`](https://mkjeldsen.gitlab.io/blog/introducing-commitmsgfmt/) – Vim filter that inspired many rules; `rule72` generalises with rectangle parser & Rust CLI.
 * `fmt(1)`, `par(1)` – generic text wrappers (no commit-specific semantics).
 * GitHub / GitLab web editors – server side wrapping only.
 

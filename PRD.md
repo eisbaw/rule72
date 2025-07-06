@@ -4,7 +4,7 @@
 Developers frequently write Git commit messages with inconsistent line-widths and formatting. This hampers readability in terminals and web tools that assume 72-column wrapped body text and ≤50-character subject lines. Manual re-wrapping is tedious and error-prone.
 
 ## 2. Objective
-Provide a **stream-oriented** command-line filter (`commit-reflow`) that reads an unformatted commit message on **stdin**, applies smart reflow rules, and writes the formatted message to **stdout**. The tool focuses solely on wrapping and indentation—it is **not** a linter or spell-checker.
+Provide a **stream-oriented** command-line filter (`rule72`) that reads an unformatted commit message on **stdin**, applies smart reflow rules, and writes the formatted message to **stdout**. The tool focuses solely on wrapping and indentation—it is **not** a linter or spell-checker.
 
 ## 3. Scope
 ### In scope
@@ -101,10 +101,10 @@ CommitMessage
 ## 7. CLI & Integration Examples
 ```bash
 # Format current commit message from Git hook
-cat $1 | commit-reflow > $1.tmp && mv $1.tmp $1
+cat $1 | rule72 > $1.tmp && mv $1.tmp $1
 
 # Ad-hoc
-printf '%s\n' "A very loooooong headline that..." | commit-reflow
+printf '%s\n' "A very loooooong headline that..." | rule72
 ```
 
 ## 8. Risks / Gotchas
@@ -166,7 +166,7 @@ lint:
 
 ### Directory Layout
 ```
-commit-reflow/
+rule72/
 ├── Cargo.toml
 ├── src/
 │   ├── lib.rs        # core parsing + reflow engine
@@ -177,7 +177,7 @@ commit-reflow/
 
 ### CI Consideration
 - GitHub Actions job uses `nix` to enter shell and run `just build && just test`.
-- Produces `commit-reflow` artifact uploaded as release.
+- Produces `rule72` artifact uploaded as release.
 
 ---
 Additions above define how to build, test, and lint the Rust implementation via Nix and Just.

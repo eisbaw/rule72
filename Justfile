@@ -1,15 +1,15 @@
 # Build release binary
 build:
-  (cd commit-reflow && cargo build --release)
+  (cd rule72 && cargo build --release)
 
 test:
-  (cd commit-reflow && cargo test --all)
+  (cd rule72 && cargo test --all)
 
 fmt:
-  (cd commit-reflow && cargo fmt --all)
+  (cd rule72 && cargo fmt --all)
 
 lint:
-  (cd commit-reflow && cargo clippy -- -D warnings)
+  (cd rule72 && cargo clippy -- -D warnings)
 
 # Reflow all commit message .txt files under data/ into data.out/
 # Preserves directory structure for easy comparison.
@@ -21,7 +21,7 @@ reflow-data: build
     rel="${f#data/}"; \
     out="data.out/$rel"; \
     mkdir -p "$(dirname "$out")"; \
-    cat "$f" | commit-reflow/target/release/commit-reflow > "$out"; \
+    cat "$f" | rule72/target/release/rule72 > "$out"; \
   done
   echo "Look for git diffs in data.out/"
 
