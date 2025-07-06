@@ -124,5 +124,62 @@ printf '%s\n' "A very loooooong headline that..." | commit-reflow
 - Standard `fmt(1)`, `par(1)` – general purpose, unaware of lists/footers.
 - GitHub & GitLab web editor – server-side wrapping only.
 
+## 11. Implementation Plan
+
+### Language & Toolchain
+- **Rust ≥ 1.70** (edition 2021)
+- Target: `x86_64-unknown-linux-musl` for fully static binary
+- Lints: `clippy`, formatting via `rustfmt`
+
+### Nix Environment (`shell.nix`)
+```nix
+{ pkgs ? import <nixpkgs> {} }:
+pkgs.mkShell {
+  buildInputs = [
+    pkgs.rustc pkgs.cargo pkgs.clippy pkgs.rustfmt
+    pkgs.pkg-config pkgs.openssl # future TLS crates if needed
+    pkgs.musl    # static linking target
+  ];
+  RUSTFLAGS = "-C target-feature=+crt-static";
+}
+```
+Invoke with `nix-shell --run <cmd>` as required by user rules.
+
+### Task Automation (`Justfile`)
+```just
+# Build release binary (static)
+build:
+  nix-shell --run "cargo build --release --target x86_64-unknown-linux-musl"
+
+# Run unit + integration tests
+test:
+  nix-shell --run "cargo test --all"
+
+# Format source tree
+fmt:
+  nix-shell --run "cargo fmt --all"
+
+# Static analysis
+lint:
+  nix-shell --run "cargo clippy -- -D warnings"
+```
+
+### Directory Layout
+```
+commit-reflow/
+├── Cargo.toml
+├── src/
+│   ├── lib.rs        # core parsing + reflow engine
+│   └── main.rs       # CLI wrapper using clap or structopt
+├── shell.nix
+└── Justfile
+```
+
+### CI Consideration
+- GitHub Actions job uses `nix` to enter shell and run `just build && just test`.
+- Produces `commit-reflow` artifact uploaded as release.
+
 ---
+Additions above define how to build, test, and lint the Rust implementation via Nix and Just.
+
 *Author: TBD • Last updated: <!-- YYYY-MM-DD -->* 
