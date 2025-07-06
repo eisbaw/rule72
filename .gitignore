@@ -1,8 +1,6 @@
 # Rust build artifacts
 /rule72/target/
 /rule72/.cargo/
-# dependency lockfile can be committed if desired; ignore locally
-/rule72/Cargo.lock
 
 # Nix shell garbage
 /result
@@ -13,4 +11,4 @@
 *.swo
 .idea/
 .vscode/
-.DS_Store 
+.DS_Store
