@@ -23,8 +23,8 @@ reflow-data: build
     mkdir -p "$(dirname "$out")"; \
     cat "$f" | commit-reflow/target/release/commit-reflow > "$out"; \
   done
-  echo "Now compare data/ with data.out/, e.g. "
+  echo "Look for git diffs in data.out/"
 
 # Compare actual commit messages with their reflowed versions
 compare-data:
-  colordiff -U10 -r data data.out/
+  colordiff -U10 -r data data.out/ | less -SNR

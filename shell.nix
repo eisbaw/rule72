@@ -7,6 +7,7 @@ pkgs.mkShell {
     pkgs.clippy
     pkgs.rustfmt
 
+    pkgs.less
     pkgs.colordiff
     pkgs.just
   ];
