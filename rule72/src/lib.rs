@@ -66,7 +66,7 @@ pub fn reflow(input: &str, opts: &Options) -> String {
     output.extend(processed_body);
 
     if !footers.is_empty() {
-        if !output.last().map_or(false, |l| l.trim().is_empty()) {
+        if !output.last().is_some_and(|l| l.trim().is_empty()) {
             output.push(String::new());
         }
         output.extend(footers.iter().map(|s| (*s).to_string()));
