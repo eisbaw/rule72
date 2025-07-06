@@ -4,8 +4,11 @@ chore: add linting tools and create lint TODO
 - update test recipes to cover all test suites
 - remove non-existent test-perf recipe
 - add check-syntax to lint-code recipe
-- create prd_lint_todo.md with comprehensive issue tracking: - 24 type
-  errors from mypy - 15 high-complexity functions - 5 missing lint tools
-  - 4 missing docstrings - 2 unused imports - 10 TODO comments for HAL
-  migration
+- create prd_lint_todo.md with comprehensive issue tracking:
+  - 24 type errors from mypy
+  - 15 high-complexity functions
+  - 5 missing lint tools
+  - 4 missing docstrings
+  - 2 unused imports
+  - 10 TODO comments for HAL migration
 

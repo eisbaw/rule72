@@ -141,8 +141,9 @@ fn process_body(lines: &[&str], opts: &Options) -> Vec<String> {
                 i += 1;
                 while i < lines.len()
                     && !lines[i].trim().is_empty()
-                    && leading_spaces(lines[i]) > start_indent
+                    && !(is_list_item(lines[i]))
                 {
+                    // treat as continuation paragraph of current list item
                     item_lines.push(lines[i]);
                     i += 1;
                 }

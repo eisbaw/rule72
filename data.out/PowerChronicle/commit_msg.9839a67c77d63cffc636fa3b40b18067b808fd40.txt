@@ -2,16 +2,17 @@ refactor(nix): extract inline scripts to external files
 
 - move management scripts from nixos/modules/powerchronicle/default.nix
   - powerchronicle-status → scripts/management/powerchronicle-status.sh
-  - powerchronicle-logs → scripts/management/powerchronicle-logs.sh -
-  powerchronicle-control → scripts/management/powerchronicle-control.sh
-- move debug scripts from module files - power-monitor-debug →
-  scripts/debug/power-monitor-debug.sh - power-policy-debug →
-  scripts/debug/power-policy-debug.sh - power-action-debug →
-  scripts/debug/power-action-debug.sh
-- move test helpers from nixos/tests/power-analytics.nix -
-  test-event-monitor → scripts/test/test-event-monitor.sh -
-  test-policy-engine → scripts/test/test-policy-engine.sh -
-  test-action-executor → scripts/test/test-action-executor.sh
+  - powerchronicle-logs → scripts/management/powerchronicle-logs.sh
+  - powerchronicle-control →
+    scripts/management/powerchronicle-control.sh
+- move debug scripts from module files
+  - power-monitor-debug → scripts/debug/power-monitor-debug.sh
+  - power-policy-debug → scripts/debug/power-policy-debug.sh
+  - power-action-debug → scripts/debug/power-action-debug.sh
+- move test helpers from nixos/tests/power-analytics.nix
+  - test-event-monitor → scripts/test/test-event-monitor.sh
+  - test-policy-engine → scripts/test/test-policy-engine.sh
+  - test-action-executor → scripts/test/test-action-executor.sh
 - update nix modules to source external scripts with env vars
 - maintain backward compatibility via environment variables
 - reduces inline script size from 500+ to <5 lines per script

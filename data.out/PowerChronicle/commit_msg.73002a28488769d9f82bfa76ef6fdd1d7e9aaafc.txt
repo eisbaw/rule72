@@ -1,12 +1,13 @@
 refactor: modularize Justfile into aspect-specific sub-justfiles
 
 - Split monolithic Justfile into 6 modular sub-justfiles in just/
-  directory: - just/lint.just: Comprehensive linting and code quality
-  checks - just/test.just: Testing infrastructure and execution -
-  just/format.just: Code formatting and style fixes - just/build.just:
-  Build, packaging, and deployment - just/dev.just: Development
-  utilities and workflows - just/security.just: Security scanning and
-  vulnerability assessment
+  directory:
+  - just/lint.just: Comprehensive linting and code quality checks
+  - just/test.just: Testing infrastructure and execution
+  - just/format.just: Code formatting and style fixes
+  - just/build.just: Build, packaging, and deployment
+  - just/dev.just: Development utilities and workflows
+  - just/security.just: Security scanning and vulnerability assessment
 
 - Update main Justfile to import modules with clean interface
 - Add comprehensive clean targets for each aspect (clean-lint,
