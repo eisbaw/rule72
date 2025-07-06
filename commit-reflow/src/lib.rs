@@ -22,16 +22,9 @@ pub fn reflow(input: &str, opts: &Options) -> String {
 
     // Separate comment lines (#) - we keep them in output but ignore for parsing headline/body
     let mut idx = 0;
-    while idx < lines.len() {
-        if lines[idx].starts_with('#') {
-            output.push(lines[idx].to_string());
-            idx += 1;
-        } else if lines[idx].trim().is_empty() {
-            output.push(lines[idx].to_string());
-            idx += 1;
-        } else {
-            break;
-        }
+    while idx < lines.len() && (lines[idx].starts_with('#') || lines[idx].trim().is_empty()) {
+        output.push(lines[idx].to_string());
+        idx += 1;
     }
 
     if idx >= lines.len() {
@@ -57,8 +50,8 @@ pub fn reflow(input: &str, opts: &Options) -> String {
     // Detect footer start
     let footer_re = Regex::new(r"^[A-Za-z][A-Za-z0-9-]*:").unwrap();
     let mut footer_index = lines.len();
-    for i in idx..lines.len() {
-        if footer_re.is_match(lines[i]) {
+    for (i, line) in lines.iter().enumerate().skip(idx) {
+        if footer_re.is_match(line) {
             footer_index = i;
             break;
         }
@@ -273,7 +266,7 @@ mod tests {
         };
         let input =
             "Subject line\n\nThis is a very long paragraph that should wrap nicely at twenty cols.";
-        let expected = "Subject line\n\nThis is a very long\nparagraph that should\nwrap nicely at twenty\ncols.\n";
+        let expected = "Subject line\n\nThis is a very long\nparagraph that\nshould wrap nicely\nat twenty cols.\n";
         let out = reflow(input, &options);
         assert_eq!(out, expected);
     }
