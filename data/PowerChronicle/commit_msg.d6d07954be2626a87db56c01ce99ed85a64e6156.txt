@@ -1,0 +1,7 @@
+gitignore: add mypy and bandit report exclusions
+
+- Added .mypy_cache/ and bandit-report.json to .gitignore
+- Prevents unnecessary tracking of temporary and report files
+- Reduces clutter in version control
+- No impact on build or runtime behavior
+

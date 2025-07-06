@@ -1,0 +1,10 @@
+docs: update event chronicle service and installation documentation
+
+- change "inhibitors_active" to "inhibitors_count" in event chronicle
+- clarify user activity description in event chronicle table
+- remove outdated action monitoring commands from installation guide
+- replace mock hardware simulation section with file-based approach
+- remove action monitoring details from user guide
+
+These changes align documentation with current implementation and improve clarity.
+

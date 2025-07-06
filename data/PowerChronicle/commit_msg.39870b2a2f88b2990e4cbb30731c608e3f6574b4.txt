@@ -1,0 +1,10 @@
+nix: add pylint pydocstyle vulture safety shellcheck
+
+- shell.nix: add pylint, pydocstyle, vulture, safety to pythonEnv
+- shell.nix: add shellcheck to buildInputs for shell linting
+- allows 'just lint' to run full suite incl docstrings, dead code,
+  security, shell script checks
+- impact: dev lint coverage improved, no runtime impact
+- gotchas: reload nix-shell to pick up new tools
+- flow: buildInputs extended before shellHook executes
+

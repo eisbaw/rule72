@@ -1,0 +1,8 @@
+nix: simplify shellHook in shell.nix for minimal setup
+
+- Removed unnecessary Python path export and .mypy_cache creation
+- Streamlined shellHook to focus on essential environment setup
+- Reduces clutter in development environment initialization
+- No impact on build or runtime behavior
+- Aligns with new guidelines for minimal shell hooks
+

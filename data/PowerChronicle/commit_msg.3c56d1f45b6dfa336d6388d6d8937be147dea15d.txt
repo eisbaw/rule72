@@ -1,0 +1,19 @@
+feat: add devcycle task for comprehensive checks
+
+- Justfile: new devcycle task for running checks
+- includes Python syntax, type checking, Nix syntax, unit tests
+- adds linting checks for Python and Nix files
+- ensures all checks pass before development continues
+
+Impact:
+- automates verification of code quality and syntax
+- reduces manual checking overhead during development
+
+Gotchas:
+- requires Python, Nix, and relevant tools installed
+- may need adjustments for additional checks in the future
+
+Flow:
+- run `just devcycle` to execute all checks in sequence
+- provides immediate feedback on code quality and errors
+

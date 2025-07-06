@@ -1,0 +1,14 @@
+security: fix Bandit subprocess warnings and add secure execution
+
+- Add secure_subprocess.py module with command path validation and whitelisting
+- Update HAL real.py to use secure subprocess execution instead of direct calls
+- Add proper nosec comments to legacy functions marked for HAL migration
+- Fix B603/B607 warnings for subprocess calls with partial executable paths
+- Fix B110 try-except-pass with proper explanatory comments
+- Eliminate critical subprocess path injection vulnerabilities
+- All tests continue to pass after security hardening
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+

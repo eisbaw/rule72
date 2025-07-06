@@ -1,0 +1,22 @@
+fix: apply comprehensive linting and security improvements
+
+- Fix 1,205+ linting violations across architecture improvement files
+- Remove trailing whitespace and blank line formatting issues
+- Fix import redefinitions and line break formatting
+- Address PEP 8 compliance issues in core architecture modules
+- Maintain functionality: all 61 unit tests passing (100% success)
+- Security: address bandit findings for temp file usage patterns
+- Code quality: improve readability and maintainability
+
+Architecture modules cleaned:
+- hal/circuit_breaker.py: Circuit breaker resilience pattern
+- hal/resilient_hal.py: HAL wrapper with fallback support
+- src/config.py: Centralized configuration management
+- src/health_checks.py: Comprehensive health monitoring
+- src/improved_power_event_monitor.py: Dependency injection monitor
+- tests/unit/test_improved_architecture.py: 22 comprehensive tests
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+

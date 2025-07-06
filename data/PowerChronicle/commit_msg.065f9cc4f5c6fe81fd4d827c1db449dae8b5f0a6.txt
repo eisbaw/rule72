@@ -1,0 +1,7 @@
+just: expand test command to include additional test types
+
+- added test-hal, test-examples, and test-perf to test target
+- allows for comprehensive testing coverage in a single command
+- no impact on existing test execution flow
+- removed outdated test-help section for clarity
+

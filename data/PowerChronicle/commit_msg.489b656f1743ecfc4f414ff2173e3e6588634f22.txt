@@ -1,0 +1,8 @@
+fix: remove unused subprocess imports and annotate action queue
+
+- src/power_action_executor.py: remove unused subprocess import, add type
+  annotation self.action_queue: Queue[PolicyDecision]
+- src/powerchronicle_status.py: remove unused subprocess import
+- resolves two flake8/pyflakes F401 reports and mypy var-annotated error
+- keeps functionality unchanged
+

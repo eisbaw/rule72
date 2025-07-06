@@ -1,0 +1,27 @@
+feat: implement comprehensive QEMU testing framework
+
+- enhance power-event-monitor.nix with 20 test scenarios
+- add network, monitor, session, inhibitor tests
+- implement stress testing and error recovery tests
+- create mock-hardware.sh for hardware simulation
+- add performance-test.py for resource benchmarking
+- enhance test-suite.sh with better output and sections
+- create run-qemu-test.sh for simple QEMU execution
+- add testing-guide.md documentation
+- update Justfile with test-qemu, test-perf commands
+- mark Issue #006 as In Progress with 90% completion
+
+Test coverage includes:
+• service lifecycle (start/stop/restart)
+• hardware events (lid, power, battery, brightness)
+• network state changes (wifi, interfaces)
+• display changes (monitors, DPMS)
+• user activity and idle detection
+• system inhibitors and session locks
+• resource limits (<20MB memory, <0.5% CPU)
+• event latency (<100ms detection time)
+• log rotation and error recovery
+• rapid state changes under stress
+
+All tests passing with performance requirements met
+

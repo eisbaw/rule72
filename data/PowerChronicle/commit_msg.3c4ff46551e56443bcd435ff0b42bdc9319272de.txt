@@ -1,0 +1,10 @@
+fix: add UTF-8 encoding to file operations in multiple modules
+
+- Updated file open operations in power_action_executor.py,
+  power_analytics.py, power_event_monitor.py, power_events.py,
+  power_policy_engine.py, power_rules.py, and
+  powerchronicle_status.py to use UTF-8 encoding
+- Ensures proper handling of non-ASCII characters in log files
+- No impact on build or runtime behavior
+- Maintains existing functionality while enhancing text file compatibility
+

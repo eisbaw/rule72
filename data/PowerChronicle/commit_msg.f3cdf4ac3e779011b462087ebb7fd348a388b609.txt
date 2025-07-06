@@ -1,0 +1,16 @@
+docs: fix CLI tool documentation to match actual implementation
+
+- Update all command examples to use actual Python script paths (src/power_*.py)
+- Remove references to non-existent CLI tools (power-visualize, power-analyze, etc.)
+- Fix testing guide to match actual Justfile structure and available commands
+- Correct tool capabilities based on actual argparse implementations
+- Update analytics commands to reflect power_analytics.py functionality
+- Replace placeholder GitHub URLs and fix NixOS module paths
+- Align documentation with HAL architecture and current codebase structure
+
+All CLI examples now accurately reflect the actual command-line interface.
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+

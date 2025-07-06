@@ -1,0 +1,14 @@
+gitignore: add .pyc files to ignore list
+
+- .gitignore: new file to exclude Python bytecode files
+- prevents clutter from compiled Python files in the repository
+- reduces unnecessary file tracking during development
+
+Impact:
+- cleaner repository with only source files tracked
+- avoids confusion with generated artifacts
+
+Gotchas:
+- ensure .gitignore is updated for any new file types
+- may require manual cleanup of existing .pyc files
+

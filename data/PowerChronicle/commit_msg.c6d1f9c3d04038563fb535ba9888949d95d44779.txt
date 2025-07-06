@@ -1,0 +1,11 @@
+test: fix HAL-based action executor tests and policy engine conditions
+
+- update action executor tests to use mock HAL interface
+- remove subprocess mocking in favor of HAL state verification
+- check action counts, state changes via mock HAL methods
+- implement missing condition checks in policy engine:
+  - user_activity_recent: idle < 60s
+  - network_active: placeholder returning False
+  - session_locked: check state from event
+- all 114 tests now pass with HAL architecture
+

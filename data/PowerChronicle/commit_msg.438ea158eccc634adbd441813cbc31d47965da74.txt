@@ -1,0 +1,26 @@
+build: add nix shell and just task runner
+
+What:
+- shell.nix: nix-shell with just + python deps
+- Justfile: task automation (test, build, lint, etc)
+- PRD.md: document development setup
+
+Why:
+- streamline development workflow
+- consistent build/test commands across environments
+- follows user preferences (nix-shell + just)
+
+Impact:
+- nix-shell provides all dev dependencies
+- just test runs full test suite
+- just build creates NixOS module
+
+Gotchas:
+- requires nix-shell for full functionality
+- some just commands need systemd (status, tail)
+
+Flow:
+- enter nix-shell
+- use just commands for all tasks
+- shell.nix preferred over flake.nix per user rules
+

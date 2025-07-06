@@ -1,0 +1,8 @@
+fix: resolve mypy type warnings in power_event_monitor.py
+
+- add explicit type annotations for previous_state and threads
+- type state dict explicitly as Dict[str, Any] in get_current_state
+- add null check for log_file before opening in _write_event
+- rewrite log_event to avoid **state unpacking confusion
+- all mypy checks now pass with zero warnings
+

@@ -1,0 +1,18 @@
+feat: refactor systemd subprocess calls to use HAL with python-systemd integration
+
+- Create SystemdHAL interface with python-systemd library integration and subprocess fallbacks
+- Add FileTailer class for pure Python tail -f functionality replacing subprocess calls
+- Update power_event_monitor.py to use SystemdHAL for session lock and inhibitor detection
+- Update power_events.py to use FileTailer instead of subprocess-based tail
+- Update power_rules.py to use SystemdHAL for service status checking
+- Add systemd-python and matplotlib dependencies to requirements.txt
+- Enhance SecureSubprocess to support NixOS paths for better compatibility
+- Add comprehensive unit tests for new HAL modules with fallback testing
+
+This refactoring eliminates security-sensitive subprocess calls where possible,
+provides cleaner abstractions, and maintains backward compatibility through fallbacks.
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+

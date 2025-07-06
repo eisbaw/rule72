@@ -1,0 +1,22 @@
+feat: implement Hardware Abstraction Layer (HAL) architecture
+
+- Add comprehensive HAL interface definitions with power, display, system, activity, and network abstractions
+- Implement Linux HAL with real hardware access via /proc, /sys, and system commands
+- Create basic mock HAL for unit testing with controllable state
+- Add SimPy-based behavior HAL for realistic hardware simulation
+- Implement HAL factory with environment auto-detection (pytest, SimPy, Linux)
+- Refactor PowerEventMonitor to use HAL interfaces instead of direct hardware access
+- Refactor ActionExecutor to use HAL for brightness control and screen locking
+- Add comprehensive test suite with HAL integration tests
+- Update shell.nix for HAL development environment with SimPy
+- Update test infrastructure to support HAL-based testing
+- Fix f-string syntax errors across multiple files
+- Add PRD.refactor.md documenting HAL architecture goals
+
+This implements Milestone 3 from the HAL refactoring plan, enabling
+fast SimPy-based testing instead of slow VM tests.
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
