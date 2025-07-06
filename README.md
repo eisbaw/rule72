@@ -1,6 +1,13 @@
-# Rule72
+# `rule72` is a git commit message formatter / reflower
 
-Smart command-line formatter that rewraps Git commit messages while **preserving structure** (headline, paragraphs, nested lists, tables, code blocks, footers, emoji bullets, etc.).  It reads from **stdin** and writes the reformatted message to **stdout** so it plugs into editors, Git hooks, pipes, or batch jobs.
+Smart command-line formatter that rewraps Git commit messages while
+**preserving structure** (headline, paragraphs, nested lists, tables, code
+blocks, footers, emoji bullets, etc.).  It reads from **stdin** and writes
+the reformatted message to **stdout** so it plugs into editors, Git hooks,
+pipes, or batch jobs.
+
+Performance: ~2ms per commit message on a laptop ⚡.\
+Run `just profile` for detailed benchmarks across the test corpus.
 
 ---
 ## What
@@ -36,7 +43,9 @@ CLI flags:
 ---
 ## Test-Catalogue: `data/` vs `data.out/`
 
-The repo ships with a large set of real-world commit messages under `data/`.  Running `just reflow-data` pipes every `*.txt` file through `rule72`, writing the result to **identical relative paths** under `data.out/`.  `just compare-data` opens a unified diff (`colordiff | less -SNR`) so you can inspect:
+The repo ships with a large set of real-world commit messages under `data/`.\
+Running `just reflow-data` pipes every `*.txt` file through `rule72`, writing the result to **identical relative paths** under `data.out/`.\
+`just compare-data` opens a unified color diff so you can inspect:
 
 * Correct wrapping of long paragraphs
 * List continuation alignment and nested bullets
@@ -47,6 +56,8 @@ This serves as an integration regression suite on top of unit tests.
 
 ---
 ## Algorithm (bounding rectangles)
+
+Computer-vision inspired, but works on text.
 
 1. **Line scan → indent matrix**: count leading spaces/tabs per line.
 2. **Marching-squares-style segmentation**: find rectangular regions of equal min-indent – yields a nesting tree (outer → inner).
@@ -74,7 +85,3 @@ Build tooling via **Nix** + **Just** (`shell.nix`, `Justfile`).
 
 * [`commitmsgfmt`](https://mkjeldsen.gitlab.io/blog/introducing-commitmsgfmt/) – Vim filter that inspired many rules; `rule72` generalises with rectangle parser & Rust CLI.
 * `fmt(1)`, `par(1)` – generic text wrappers (no commit-specific semantics).
-* GitHub / GitLab web editors – server side wrapping only.
-
----
-Happy rebasing! 🚀 
