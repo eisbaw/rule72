@@ -1,0 +1,42 @@
+docs: fix documentation inaccuracies and implement missing CLI tools
+
+Major documentation corrections and CLI implementation to ensure
+accuracy:
+
+## Documentation Fixes
+- **PRD.md**: Corrected implementation status claims from false "100%
+  complete" to realistic "~60% complete" with accurate component status
+- **powerchronicle_handoff.md**: Fixed installation examples, corrected
+  command syntax, updated service names to match actual implementation
+- **Installation guide**: Fixed file paths, NixOS module imports, and
+  configuration syntax
+
+## CLI Implementation
+- **power-events**: Complete event log management utility with status,
+  tail, stats, timeline
+- **power-rules**: Policy management interface with decisions, stats,
+  rule listing
+- **powerchronicle-status**: Comprehensive system status overview with
+  health checks
+- **NixOS integration**: Added all CLI commands to package installation
+
+## Technical Improvements
+- Fixed type annotation in power-event-monitor test to resolve mypy
+  warnings
+- Updated command examples throughout documentation to use correct
+  syntax
+- Added comprehensive help text and subcommands for all CLI tools
+
+## Impact
+- All documented CLI commands now work as described
+- Installation instructions are accurate and tested
+- Users get realistic expectations about system capabilities
+- Clear roadmap provided for completing missing functionality
+
+Current accurate status: Event monitoring ✅, Analytics ✅, Policy
+Engine ❌, Action Executor ❌
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+

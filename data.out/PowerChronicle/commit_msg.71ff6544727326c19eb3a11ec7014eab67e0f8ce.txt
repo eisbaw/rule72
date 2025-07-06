@@ -1,0 +1,7 @@
+fix: correct string formatting in power_policy_engine.py
+
+- changed float('inf') to float("inf") for consistency
+- maintains existing functionality without altering logic
+- no impact on build or runtime behavior
+- improves code readability by standardizing string usage
+

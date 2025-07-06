@@ -1,0 +1,10 @@
+fix: resolve devcycle errors and update docs
+
+- merge duplicate environment.systemPackages in nix modules
+- fix f-string syntax errors in test files (lines 105, 112)
+- add shellcheck SC2317 disable for eval-called functions
+- format nix files with nixpkgs-fmt (3 files)
+- update README.md status: all services now complete
+- add comprehensive command docs to README.md
+- fix jq path references to use with pkgs context
+

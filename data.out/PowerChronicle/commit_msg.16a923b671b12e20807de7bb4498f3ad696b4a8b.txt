@@ -1,0 +1,15 @@
+feat: add WiFi detection module and refactor network checks
+
+- shell.nix: include networkmanager and wireless-tools for WiFi support
+- hal/real.py: integrate WiFiDetector for robust WiFi connection checks
+- hal/wifi_detector.py: new module for multi-method WiFi detection
+- src/power_event_monitor.py: refactor is_wifi_connected to use
+  WiFiDetector
+- src/test_power_event_monitor.py: update tests to mock new WiFi
+  detection
+
+This refactor centralizes WiFi detection logic, improving reliability.
+
+Impact: enhances network connectivity checks without altering existing behavior.
+Gotchas: ensure all dependencies are installed for new tools in shell.nix.
+

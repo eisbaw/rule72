@@ -1,0 +1,7 @@
+just: modify clean-test to use silent removal commands
+
+- Changed rm commands to use '-' prefix for silent execution
+- Maintains existing functionality while reducing console output
+- No impact on build or runtime behavior
+- Ensure all test artifacts are still cleaned as intended
+

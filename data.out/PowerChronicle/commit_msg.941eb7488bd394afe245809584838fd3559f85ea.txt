@@ -1,0 +1,7 @@
+just: rename quick-check to check-syntax in lint.just
+
+- updated lint-code target to use check-syntax instead of quick-check
+- simplifies linting command structure for clarity
+- no impact on linting execution flow or results
+- maintains existing functionality of syntax checks
+

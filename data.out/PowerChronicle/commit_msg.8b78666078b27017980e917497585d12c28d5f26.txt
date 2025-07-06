@@ -1,0 +1,10 @@
+just: update build and lint commands for better checks
+
+- Changed build-nix to check NixOS module syntax instead of building
+- Updated build-docs to verify existence of documentation directory
+- Modified tail and events commands to check for log file presence
+- Enhanced security command to include security audit for permissions
+- Maintains existing functionality while improving error handling
+- No impact on build or runtime behavior
+- Aligns with new guidelines for robust command checks
+

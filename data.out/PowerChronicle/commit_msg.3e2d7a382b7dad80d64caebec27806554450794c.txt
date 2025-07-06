@@ -1,0 +1,8 @@
+just: simplify output messages in Justfile commands
+
+- Updated echo statements to use simple success indicators (✅)
+- Removed verbose messages and emojis for cleaner output
+- Maintains existing functionality while reducing console clutter
+- No impact on build or runtime behavior
+- Aligns with new Justfile organization guidelines for minimal output
+

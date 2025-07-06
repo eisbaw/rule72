@@ -1,0 +1,30 @@
+feat: complete HAL abstraction for all system interfaces
+
+Implement comprehensive Hardware Abstraction Layer (HAL) to eliminate
+all direct subprocess calls from business logic, improving security,
+testability, and maintainability.
+
+New HAL interfaces:
+- NotificationHAL: Desktop notifications and wall messages
+- ServiceHAL: Systemd service status and configuration
+- Extended SystemHAL: Inhibitors and session lock detection
+- Extended NetworkHAL: WiFi enable/disable functionality
+
+Refactored components:
+- ActionExecutor: All system actions now use HAL interfaces
+- PowerEventMonitor: System state collection via HAL
+- StatusChecker: Service management through ServiceHAL
+
+Security improvements:
+- Extended secure subprocess whitelist for new commands
+- All system interactions validated through HAL layer
+
+Testing enhancements:
+- Complete mock implementations for all new interfaces
+- SimPy behavior models support extended functionality
+- All HAL tests passing (13/13)
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+

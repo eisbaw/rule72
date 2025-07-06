@@ -1,0 +1,19 @@
+nix: add mypy and stress to development environment
+
+- shell.nix: include python3Packages.mypy for type checking
+- shell.nix: add stress for load testing capabilities
+- enhances development environment with additional tools
+- supports better code quality and performance testing
+
+Impact:
+- provides type checking during development
+- enables load testing to assess system performance
+
+Gotchas:
+- requires additional dependencies in the nix-shell
+- ensure stress is used appropriately to avoid system overload
+
+Flow:
+- enter nix-shell to access updated development tools
+- utilize mypy for type checks and stress for load testing
+

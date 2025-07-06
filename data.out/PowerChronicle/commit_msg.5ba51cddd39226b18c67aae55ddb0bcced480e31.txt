@@ -1,0 +1,25 @@
+refactor: split .cursorrules into modular .cursor/rules/*.mdc files
+
+- Split monolithic .cursorrules into 5 focused rule files in
+  .cursor/rules/: - justfile-organization.mdc: Modular justfile
+  architecture guidelines - development-standards.mdc: Development
+  workflow and quality standards - code-quality.mdc: Comprehensive
+  linting, testing, and security standards - project-structure.mdc:
+  PowerChronicle architecture and organization -
+  ai-assistant-guidelines.mdc: Specific guidelines for AI assistants
+
+- Add comprehensive README.md for navigation and quick reference
+- Remove original monolithic .cursorrules file
+- Maintain all original guidelines with better organization
+
+Benefits:
+- Focused content: Each file addresses specific aspects
+- Better maintainability: Changes isolated to relevant areas
+- Improved navigation: Clear categorization and indexing
+- Enhanced readability: Shorter, more focused documents
+- Modular updates: Easy to update specific guidelines
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
