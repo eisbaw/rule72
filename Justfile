@@ -13,13 +13,18 @@ lint:
 
 # Reflow all commit message .txt files under data/ into data.out/
 # Preserves directory structure for easy comparison.
-reflow-data:
+reflow-data: build
   #!/usr/bin/env bash
   set -euo pipefail
-  mkdir -p ../data.out
-  for f in $(find ../data -type f -name '*.txt'); do \
-    rel="$${f#../data/}"; \
-    out="../data.out/$$rel"; \
-    mkdir -p "$$(dirname "$$out")"; \
-    cat "$$f" | target/release/commit-reflow > "$$out"; \
-  done 
+  mkdir -p data.out
+  for f in $(find data -type f -name '*.txt'); do \
+    rel="${f#data/}"; \
+    out="data.out/$rel"; \
+    mkdir -p "$(dirname "$out")"; \
+    cat "$f" | commit-reflow/target/release/commit-reflow > "$out"; \
+  done
+  echo "Now compare data/ with data.out/, e.g. "
+
+# Compare actual commit messages with their reflowed versions
+compare-data:
+  colordiff -U10 -r data data.out/
