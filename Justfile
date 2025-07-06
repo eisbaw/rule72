@@ -39,3 +39,24 @@ nix-test:
   echo "Built: $RESULT"
   echo "Testing --help..."
   "$RESULT/bin/rule72" --help
+
+# Profile performance on entire corpus (wall-clock time)
+profile: build
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "Profiling rule72 over test corpus (discarding output)..."
+
+  # Run sequentially for deterministic timing; change to xargs -P for parallel
+  echo "command,mean,stddev,median,user,system,min,max" > rule72-profile.csv
+  find data -type f -name '*.txt' -print0 | \
+    while IFS= read -r -d '' f; do \
+      hyperfine \
+        --shell=none \
+        --warmup 3 \
+        -r 100 \
+        --input "$f" \
+        --output null \
+        --export-csv tmp.csv \
+        "rule72/target/release/rule72"
+      tail -n 1 tmp.csv >> rule72-profile.csv
+    done

@@ -10,6 +10,7 @@ pkgs.mkShell {
     pkgs.less
     pkgs.colordiff
     pkgs.just
+    pkgs.hyperfine
   ];
   # RUSTFLAGS left empty for default glibc target; enable musl separately if needed
 } 
