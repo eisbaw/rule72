@@ -1,0 +1,14 @@
+[package]
+name = "commit-reflow"
+version = "0.1.0"
+edition = "2021"
+authors = ["TBD"]
+license = "MIT OR Apache-2.0"
+description = "Git commit-message reflow CLI tool"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+regex = "1"
+unicode-segmentation = "1.10"
+unicode-width = "0.1"
+anyhow = "1" 

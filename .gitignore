@@ -1,0 +1,16 @@
+# Rust build artifacts
+/commit-reflow/target/
+/commit-reflow/.cargo/
+# dependency lockfile can be committed if desired; ignore locally
+/commit-reflow/Cargo.lock
+
+# Nix shell garbage
+/result
+/.direnv/
+
+# Editors
+*.swp
+*.swo
+.idea/
+.vscode/
+.DS_Store 
