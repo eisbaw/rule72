@@ -15,12 +15,13 @@ Complete HAL refactoring: implement DisplayHAL and ActivityHAL
 - All HAL tests passing: SystemdHAL (10/10), DisplayHAL (11/11),
   ActivityHAL (13/13)
 
-Major architectural improvements: • Hardware abstraction completed for
-display and activity subsystems • Clean separation of concerns with
-proper fallback mechanisms • Security enhanced through SecureSubprocess
-for all system calls • Mock implementations enable comprehensive testing
-without hardware dependencies • Real implementations support both X11
-and Wayland environments
+Major architectural improvements:
+• Hardware abstraction completed for display and activity subsystems
+• Clean separation of concerns with proper fallback mechanisms
+• Security enhanced through SecureSubprocess for all system calls
+• Mock implementations enable comprehensive testing without hardware
+    dependencies
+• Real implementations support both X11 and Wayland environments
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
 

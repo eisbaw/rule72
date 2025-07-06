@@ -1,5 +1,6 @@
 use regex::Regex;
 use unicode_width::UnicodeWidthStr;
+use unicode_segmentation::UnicodeSegmentation;
 
 /// Formatting options
 #[derive(Debug, Clone)]
@@ -200,25 +201,50 @@ fn is_block_start(line: &str) -> bool {
 
 fn is_list_item(line: &str) -> bool {
     let trimmed = line.trim_start();
-    let bullet_re = Regex::new(r"^([*-]|\d+[\.)]) ").unwrap();
-    bullet_re.is_match(trimmed)
+    if trimmed.starts_with("* ") || trimmed.starts_with("- ") {
+        return true;
+    }
+
+    // Numbered list (e.g., "1." or "2)")
+    let digits = trimmed.chars().take_while(|c| c.is_ascii_digit());
+    let digit_count = digits.clone().count();
+    if digit_count > 0 {
+        let rest = &trimmed[digit_count..];
+        if rest.starts_with(") ") || rest.starts_with(". ") {
+            return true;
+        }
+    }
+
+    // Emoji or other grapheme cluster bullet followed by space
+    let mut graphemes = trimmed.graphemes(true);
+    if let Some(first_cluster) = graphemes.next() {
+        if !first_cluster.is_ascii() {
+            if let Some(rest) = trimmed.get(first_cluster.len()..first_cluster.len() + 1) {
+                return rest == " ";
+            }
+        }
+    }
+    false
 }
 
 fn extract_bullet_prefix(line: &str) -> &str {
-    let bytes = line.as_bytes();
-    let mut idx = 0;
-    while idx < bytes.len() {
-        if bytes[idx] == b' ' {
+    let trimmed_start = line.trim_start_matches(' ');
+    let offset = line.len() - trimmed_start.len();
+
+    // Identify grapheme cluster or ascii bullet
+    let mut idx = offset;
+    for (byte_idx, ch) in trimmed_start.char_indices() {
+        idx = offset + byte_idx;
+        if ch == ' ' {
+            // include the space and any following spaces
             idx += 1;
             break;
         }
+    }
+    while idx < line.len() && &line[idx..idx + 1] == " " {
         idx += 1;
     }
-    let mut spaces = idx;
-    while spaces < bytes.len() && bytes[spaces] == b' ' {
-        spaces += 1;
-    }
-    &line[..spaces]
+    &line[..idx]
 }
 
 fn leading_spaces(line: &str) -> usize {

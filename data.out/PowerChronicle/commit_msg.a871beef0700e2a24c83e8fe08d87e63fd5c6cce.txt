@@ -7,9 +7,10 @@ fix: implement missing DisplayHAL abstract methods in BehaviorMockDisplayHAL
 - Add set_dpms_state() method to control display power management
 - Resolve abstract class instantiation errors in HAL tests
 
-HAL Test Results: ✅ All 13 HAL tests now pass (100% success rate) ✅
-BehaviorMockDisplayHAL fully implements DisplayHAL interface ✅ Mock
-hardware integration working correctly
+HAL Test Results:
+✅ All 13 HAL tests now pass (100% success rate)
+✅ BehaviorMockDisplayHAL fully implements DisplayHAL interface
+✅ Mock hardware integration working correctly
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
 
