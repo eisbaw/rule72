@@ -60,3 +60,9 @@ profile: build
         "rule72/target/release/rule72"
       tail -n 1 tmp.csv >> rule72-profile.csv
     done
+
+# Debug a single commit message, diff and show SVG
+debug txtfile: build
+  rule72/target/release/rule72 --debug-svg {{txtfile}}.svg < {{txtfile}} > {{txtfile}}.tmp
+  -colordiff -U10 {{txtfile}} {{txtfile}}.tmp
+  @feh {{txtfile}}.svg || true
