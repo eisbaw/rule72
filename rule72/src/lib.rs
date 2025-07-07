@@ -48,6 +48,7 @@ pub enum ContChunk {
 
 #[derive(Debug)]
 pub struct ListNode {
+    pub introduction: Vec<CatLine>,  // Introduction lines that precede the list
     pub items: Vec<ListItem>,
 }
 
@@ -69,7 +70,7 @@ pub struct Document {
 /// Public API: reflow an entire commit message
 pub fn reflow(input: &str, opts: &Options) -> String {
     let lines: Vec<&str> = input.lines().map(|l| l.trim_end_matches('\r')).collect();
-    
+
     // Lex lines into CatLines
     let cat_lines = lex_lines(&lines);
     
@@ -78,7 +79,7 @@ pub fn reflow(input: &str, opts: &Options) -> String {
     
     // Build document structure
     let document = build_document(classified_lines);
-    
+
     // Generate debug SVG if requested
     if let Some(svg_path) = &opts.debug_svg {
         generate_debug_svg(&document, svg_path);
@@ -134,7 +135,7 @@ fn lex_lines(lines: &[&str]) -> Vec<CatLine> {
                     probabilities.insert(Category::Code, special_char_ratio);
                 }
             }
-            
+
             // Determine initial category (highest probability)
             let final_category = probabilities
                 .iter()
@@ -220,21 +221,48 @@ fn build_document(lines: Vec<CatLine>) -> Document {
         if lines[i].final_category == Category::Comment {
             body_chunks.push(ContChunk::Comment(vec![lines[i].clone()]));
         }
-        i += 1;
+            i += 1;
     }
     
-    // Extract headline
+    // Extract headline - but check if it's actually an introduction to a list
     if i < lines.len() && lines[i].final_category != Category::Footer {
-        headline = Some(lines[i].clone());
-        i += 1;
+        // Check if the next line (after any empty lines) is a list
+        let mut next_idx = i + 1;
+        while next_idx < lines.len() && lines[next_idx].final_category == Category::Empty {
+            next_idx += 1;
+        }
+        
+        let next_is_list = next_idx < lines.len() && lines[next_idx].final_category == Category::List;
+        
+        // If current line ends with colon and next line is a list, treat as introduction + list
+        if lines[i].text.trim().ends_with(':') && next_is_list {
+            // This is an introduction line, not a headline
+            // Include any empty lines between introduction and list
+            let mut intro_chunk = vec![lines[i].clone()];
+            i += 1;
+            while i < lines.len() && lines[i].final_category == Category::Empty {
+                intro_chunk.push(lines[i].clone());
+                i += 1;
+            }
+            
+            // Now parse the list
+            if i < lines.len() && lines[i].final_category == Category::List {
+                let list_node = parse_list_with_intro(&lines, &mut i, intro_chunk);
+                body_chunks.push(ContChunk::List(list_node));
+            }
+        } else {
+            // Regular headline
+            headline = Some(lines[i].clone());
+            i += 1;
+            
+            // Skip single blank line after headline
+            if i < lines.len() && lines[i].final_category == Category::Empty {
+                i += 1;
+            }
+        }
     }
     
-    // Skip single blank line after headline
-    if i < lines.len() && lines[i].final_category == Category::Empty {
-        i += 1;
-    }
-    
-    // Process body chunks
+    // Process remaining body chunks
     while i < lines.len() && lines[i].final_category != Category::Footer {
         match lines[i].final_category {
             Category::Empty => {
@@ -261,13 +289,30 @@ fn build_document(lines: Vec<CatLine>) -> Document {
                 body_chunks.push(ContChunk::Table(table_lines));
             }
             Category::Code => {
-                let mut code_lines = vec![lines[i].clone()];
-                i += 1;
-                while i < lines.len() && lines[i].final_category == Category::Code {
-                    code_lines.push(lines[i].clone());
+                // Check if this is an introduction line (ends with colon) followed by a list
+                let is_intro = lines[i].text.trim().ends_with(':');
+                let next_is_list = i + 1 < lines.len() && lines[i + 1].final_category == Category::List;
+                
+                if is_intro && next_is_list {
+                    // This is an introduction line for the following list
+                    let intro_lines = vec![lines[i].clone()];
                     i += 1;
+                    
+                    // Parse the list with the introduction
+                    if i < lines.len() && lines[i].final_category == Category::List {
+                        let list_node = parse_list_with_intro(&lines, &mut i, intro_lines);
+                        body_chunks.push(ContChunk::List(list_node));
+                    }
+                } else {
+                    // Regular code block
+                    let mut code_lines = vec![lines[i].clone()];
+                    i += 1;
+                    while i < lines.len() && lines[i].final_category == Category::Code {
+                        code_lines.push(lines[i].clone());
+                        i += 1;
+                    }
+                    body_chunks.push(ContChunk::Code(code_lines));
                 }
-                body_chunks.push(ContChunk::Code(code_lines));
             }
             Category::List => {
                 let list_node = parse_list(&lines, &mut i);
@@ -303,7 +348,7 @@ fn build_document(lines: Vec<CatLine>) -> Document {
             Category::ProseGeneral | Category::URL => {
                 let mut para_lines = vec![lines[i].clone()];
                 i += 1;
-                while i < lines.len() 
+                while i < lines.len()
                     && (lines[i].final_category == Category::ProseGeneral 
                         || lines[i].final_category == Category::ProseIntroduction
                         || lines[i].final_category == Category::URL)
@@ -334,6 +379,10 @@ fn build_document(lines: Vec<CatLine>) -> Document {
 
 /// Parse a list structure (handles nesting)
 fn parse_list(lines: &[CatLine], i: &mut usize) -> ListNode {
+    parse_list_with_intro(lines, i, Vec::new())
+}
+
+fn parse_list_with_intro(lines: &[CatLine], i: &mut usize, introduction: Vec<CatLine>) -> ListNode {
     let mut items: Vec<ListItem> = Vec::new();
     let base_indent = lines[*i].indent;
     
@@ -341,7 +390,7 @@ fn parse_list(lines: &[CatLine], i: &mut usize) -> ListNode {
         if lines[*i].indent > base_indent {
             // This is a nested list item
             if let Some(last_item) = items.last_mut() {
-                let nested = parse_list(lines, i);
+                let nested = parse_list_with_intro(lines, i, Vec::new());
                 last_item.nested = Some(Box::new(nested));
             }
         } else {
@@ -366,7 +415,7 @@ fn parse_list(lines: &[CatLine], i: &mut usize) -> ListNode {
         }
     }
     
-    ListNode { items }
+    ListNode { introduction, items }
 }
 
 /// Pretty print the document structure
@@ -384,11 +433,27 @@ fn pretty_print(doc: &Document, opts: &Options) -> String {
         // Add blank line between non-empty chunks (but not before the first chunk)
         if idx > 0 {
             let prev_chunk = &doc.body_chunks[idx - 1];
+            let curr_chunk = chunk;
+            
             let prev_is_empty = matches!(prev_chunk, ContChunk::Paragraph(lines) if lines.len() == 1 && lines[0].final_category == Category::Empty);
             let curr_is_empty = matches!(chunk, ContChunk::Paragraph(lines) if lines.len() == 1 && lines[0].final_category == Category::Empty);
             
-            // Don't add extra blank line if either the previous or current chunk is already an empty line
-            if !prev_is_empty && !curr_is_empty && !matches!(prev_chunk, ContChunk::Comment(_)) {
+            // Check if previous chunk is a ProseIntroduction that should connect to current list
+            let prev_is_intro = matches!(prev_chunk, ContChunk::Paragraph(lines) if lines.len() == 1 && lines[0].final_category == Category::ProseIntroduction);
+            let curr_is_list = matches!(curr_chunk, ContChunk::List(_));
+            
+            // Check if previous chunk is a single-line Code chunk ending with colon (introduction) and current is a list
+            let prev_is_code_intro = matches!(prev_chunk, ContChunk::Code(lines) if lines.len() == 1 && lines[0].text.trim().ends_with(':'));
+            
+            // Don't add extra blank line if:
+            // - Either chunk is an empty line
+            // - Previous chunk is a comment
+            // - Previous chunk is a ProseIntroduction and current is a List (they should be connected)
+            // - Previous chunk is a single-line Code ending with colon and current is a List
+            if !prev_is_empty && !curr_is_empty && 
+               !matches!(prev_chunk, ContChunk::Comment(_)) &&
+               !(prev_is_intro && curr_is_list) &&
+               !(prev_is_code_intro && curr_is_list) {
                 output.push(String::new());
             }
         }
@@ -445,6 +510,15 @@ fn pretty_print(doc: &Document, opts: &Options) -> String {
 /// Pretty print a list node
 fn pretty_print_list(list: &ListNode, opts: &Options, depth: usize) -> Vec<String> {
     let mut output = Vec::new();
+    
+    // Print introduction lines first
+    for intro_line in &list.introduction {
+        if intro_line.final_category == Category::Empty {
+            output.push(String::new());
+        } else {
+            output.push(intro_line.text.clone());
+        }
+    }
     
     for item in &list.items {
         let bullet_prefix = extract_bullet_prefix(&item.bullet_line.text);
@@ -858,6 +932,15 @@ Probabilities:
 }
 
 fn collect_list_lines_owned(all_lines: &mut Vec<(CatLine, usize, &'static str)>, list: &ListNode, depth: usize) {
+    // Add introduction lines
+    for intro in &list.introduction {
+        if intro.final_category == Category::Empty {
+            all_lines.push((intro.clone(), depth, "empty"));
+        } else {
+            all_lines.push((intro.clone(), depth, "list"));
+        }
+    }
+    
     for item in &list.items {
         all_lines.push((item.bullet_line.clone(), depth, "list"));
         for cont in &item.continuation {
@@ -870,6 +953,9 @@ fn collect_list_lines_owned(all_lines: &mut Vec<(CatLine, usize, &'static str)>,
 }
 
 fn collect_list_lines_for_svg(doc_lines: &mut Vec<CatLine>, list: &ListNode) {
+    // Add introduction lines
+    doc_lines.extend(list.introduction.iter().cloned());
+    
     for item in &list.items {
         doc_lines.push(item.bullet_line.clone());
         doc_lines.extend(item.continuation.iter().cloned());
