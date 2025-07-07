@@ -103,7 +103,7 @@ fn lex_lines(lines: &[&str]) -> Vec<CatLine> {
                 probabilities.insert(Category::Empty, 1.0);
             } else if line.starts_with('#') {
                 probabilities.insert(Category::Comment, 1.0);
-            } else if is_footer_line(line) {
+            } else if idx > 0 && is_footer_line(line) {  // Only check for footers after first line
                 probabilities.insert(Category::Footer, 0.9);
                 probabilities.insert(Category::ProseGeneral, 0.1);
             } else {
@@ -126,7 +126,7 @@ fn lex_lines(lines: &[&str]) -> Vec<CatLine> {
                 } else if special_char_ratio > 0.3 || indent >= 4 {
                     probabilities.insert(Category::Code, 0.7);
                     probabilities.insert(Category::ProseGeneral, 0.3);
-                } else if ends_with_colon {
+                } else if ends_with_colon && idx > 0 {  // Don't treat headline as introduction
                     probabilities.insert(Category::ProseIntroduction, 0.7);
                     probabilities.insert(Category::ProseGeneral, 0.3);
                 } else {
@@ -229,8 +229,8 @@ fn build_document(lines: Vec<CatLine>) -> Document {
         i += 1;
     }
     
-    // Skip blank line after headline
-    while i < lines.len() && lines[i].final_category == Category::Empty {
+    // Skip single blank line after headline
+    if i < lines.len() && lines[i].final_category == Category::Empty {
         i += 1;
     }
     
@@ -238,7 +238,9 @@ fn build_document(lines: Vec<CatLine>) -> Document {
     while i < lines.len() && lines[i].final_category != Category::Footer {
         match lines[i].final_category {
             Category::Empty => {
-                i += 1; // Skip empty lines between chunks
+                // Preserve empty lines between chunks
+                body_chunks.push(ContChunk::Paragraph(vec![lines[i].clone()]));
+                i += 1;
             }
             Category::Comment => {
                 let mut comment_lines = vec![lines[i].clone()];
@@ -379,8 +381,16 @@ fn pretty_print(doc: &Document, opts: &Options) -> String {
     
     // Print body chunks
     for (idx, chunk) in doc.body_chunks.iter().enumerate() {
-        if idx > 0 && !matches!(doc.body_chunks[idx - 1], ContChunk::Comment(_)) {
-            output.push(String::new()); // Blank line between chunks
+        // Add blank line between non-empty chunks (but not before the first chunk)
+        if idx > 0 {
+            let prev_chunk = &doc.body_chunks[idx - 1];
+            let prev_is_empty = matches!(prev_chunk, ContChunk::Paragraph(lines) if lines.len() == 1 && lines[0].final_category == Category::Empty);
+            let curr_is_empty = matches!(chunk, ContChunk::Paragraph(lines) if lines.len() == 1 && lines[0].final_category == Category::Empty);
+            
+            // Don't add extra blank line if either the previous or current chunk is already an empty line
+            if !prev_is_empty && !curr_is_empty && !matches!(prev_chunk, ContChunk::Comment(_)) {
+                output.push(String::new());
+            }
         }
         
         match chunk {
@@ -395,18 +405,23 @@ fn pretty_print(doc: &Document, opts: &Options) -> String {
                 }
             }
             ContChunk::Paragraph(lines) => {
-                let needs_wrap = lines.iter().any(|l| display_width(&l.text) > opts.width);
-                if needs_wrap {
-                    let text = lines
-                        .iter()
-                        .map(|l| l.text.trim())
-                        .collect::<Vec<_>>()
-                        .join(" ");
-                    let wrapped = wrap_text(&text, opts.width);
-                    output.extend(wrapped);
+                // Check if this is just an empty line
+                if lines.len() == 1 && lines[0].final_category == Category::Empty {
+                    output.push(String::new());
                 } else {
-                    for line in lines {
-                        output.push(line.text.clone());
+                    let needs_wrap = lines.iter().any(|l| display_width(&l.text) > opts.width);
+                    if needs_wrap {
+                        let text = lines
+                            .iter()
+                            .map(|l| l.text.trim())
+                            .collect::<Vec<_>>()
+                            .join(" ");
+                        let wrapped = wrap_text(&text, opts.width);
+                        output.extend(wrapped);
+                    } else {
+                        for line in lines {
+                            output.push(line.text.clone());
+                        }
                     }
                 }
             }
@@ -617,44 +632,71 @@ fn generate_debug_svg(doc: &Document, path: &str) {
     let char_width = 8;
     let margin = 20;
     
-    // Calculate dimensions
+    // First, collect all the actual lines from the document
+    let mut doc_lines: Vec<CatLine> = Vec::new();
+    
+    // Add headline
+    if let Some(headline) = &doc.headline {
+        doc_lines.push(headline.clone());
+    }
+    
+    // Add body chunks
+    for chunk in &doc.body_chunks {
+        match chunk {
+            ContChunk::Comment(lines) | ContChunk::Table(lines) | 
+            ContChunk::Code(lines) | ContChunk::Paragraph(lines) => {
+                doc_lines.extend(lines.iter().cloned());
+            }
+            ContChunk::List(list_node) => {
+                collect_list_lines_for_svg(&mut doc_lines, list_node);
+            }
+        }
+    }
+    
+    // Add footers
+    doc_lines.extend(doc.footers.iter().cloned());
+    
+    // Now create the visualization data
     let mut all_lines = Vec::new();
     
-    // Collect all lines
     if let Some(headline) = &doc.headline {
-        all_lines.push((headline, 0, "headline"));
+        all_lines.push((headline.clone(), 0, "headline"));
     }
     
     for chunk in &doc.body_chunks {
         match chunk {
             ContChunk::Comment(lines) => {
                 for line in lines {
-                    all_lines.push((line, 1, "comment"));
+                    all_lines.push((line.clone(), 1, "comment"));
                 }
             }
             ContChunk::Table(lines) => {
                 for line in lines {
-                    all_lines.push((line, 1, "table"));
+                    all_lines.push((line.clone(), 1, "table"));
                 }
             }
             ContChunk::Code(lines) => {
                 for line in lines {
-                    all_lines.push((line, 1, "code"));
+                    all_lines.push((line.clone(), 1, "code"));
                 }
             }
             ContChunk::Paragraph(lines) => {
                 for line in lines {
-                    all_lines.push((line, 1, "paragraph"));
+                    if line.final_category == Category::Empty {
+                        all_lines.push((line.clone(), 1, "empty"));
+                    } else {
+                        all_lines.push((line.clone(), 1, "paragraph"));
+                    }
                 }
             }
             ContChunk::List(list_node) => {
-                collect_list_lines(&mut all_lines, list_node, 1);
+                collect_list_lines_owned(&mut all_lines, list_node, 1);
             }
         }
     }
     
     for footer in &doc.footers {
-        all_lines.push((footer, 0, "footer"));
+        all_lines.push((footer.clone(), 0, "footer"));
     }
     
     let max_width = all_lines.iter()
@@ -680,6 +722,7 @@ fn generate_debug_svg(doc: &Document, path: &str) {
     svg.push_str("    .paragraph { fill: #2e3440; }\n");
     svg.push_str("    .list { fill: #2e3440; }\n");
     svg.push_str("    .footer { fill: #4c566a; }\n");
+    svg.push_str("    .empty { fill: #d8dee9; }\n");
     svg.push_str("    .chunk-rect { fill: none; stroke-width: 2; opacity: 0.5; }\n");
     svg.push_str("    .chunk-label { font-size: 10px; fill: #4c566a; }\n");
     svg.push_str("    .prob-tooltip { font-size: 10px; fill: #2e3440; }\n");
@@ -752,7 +795,13 @@ Probabilities:
             prob_text
         ));
         
-        svg.push_str(&format!("{}</text>", escaped_text));
+        // For empty lines, show a placeholder
+        if line.final_category == Category::Empty {
+            svg.push_str("[empty line]");
+        } else {
+            svg.push_str(&escaped_text);
+        }
+        svg.push_str("</text>");
         
         y += line_height;
     }
@@ -775,6 +824,7 @@ Probabilities:
             "paragraph" => "#a3be8c",
             "list" => "#81a1c1",
             "footer" => "#bf616a",
+            "empty" => "#d8dee9",
             _ => "#4c566a",
         };
         
@@ -807,14 +857,24 @@ Probabilities:
     }
 }
 
-fn collect_list_lines<'a>(all_lines: &mut Vec<(&'a CatLine, usize, &'static str)>, list: &'a ListNode, depth: usize) {
+fn collect_list_lines_owned(all_lines: &mut Vec<(CatLine, usize, &'static str)>, list: &ListNode, depth: usize) {
     for item in &list.items {
-        all_lines.push((&item.bullet_line, depth, "list"));
+        all_lines.push((item.bullet_line.clone(), depth, "list"));
         for cont in &item.continuation {
-            all_lines.push((cont, depth + 1, "list"));
+            all_lines.push((cont.clone(), depth + 1, "list"));
         }
         if let Some(nested) = &item.nested {
-            collect_list_lines(all_lines, nested, depth + 1);
+            collect_list_lines_owned(all_lines, nested, depth + 1);
+        }
+    }
+}
+
+fn collect_list_lines_for_svg(doc_lines: &mut Vec<CatLine>, list: &ListNode) {
+    for item in &list.items {
+        doc_lines.push(item.bullet_line.clone());
+        doc_lines.extend(item.continuation.iter().cloned());
+        if let Some(nested) = &item.nested {
+            collect_list_lines_for_svg(doc_lines, nested);
         }
     }
 }
@@ -850,3 +910,4 @@ mod tests {
         assert_eq!(out, expected);
     }
 }
+
