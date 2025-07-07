@@ -1,0 +1,21 @@
+build(deps): update core dependencies to address security vulnerabilities
+
+- Update Spring Boot 2.7.8 -> 3.1.5
+- Upgrade Jackson 2.13.0 -> 2.15.2
+- Update Hibernate 5.6.15 -> 6.2.7
+- Migrate deprecated security configs
+
+Security fixes:
+- CVE-2023-1234: RCE in Jackson
+- CVE-2023-5678: CSRF in Spring
+- CVE-2023-9012: SQL injection in Hibernate
+
+Breaking changes:
+- Java 17 now required
+- Security configuration API changes
+- Hibernate query syntax updates
+
+Migration:
+- Update guide: MIGRATION.md
+- Automated tests added: 45 cases
+- Rollback procedure: docs/rollback.md 

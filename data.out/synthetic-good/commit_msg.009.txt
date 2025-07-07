@@ -1,0 +1,26 @@
+docs(api): revise API documentation with OpenAPI 3.0 specifications
+
+- Convert API docs to OpenAPI 3.0 format
+- Add detailed request/response examples
+- Include rate limiting documentation
+- Document error scenarios
+
+Documentation updates:
+- Authentication flows
+- Request validation rules
+- Error handling patterns
+- Rate limiting policies
+
+Quality improvements:
+- Added code samples in 5 languages
+- Included integration test examples
+- Added performance recommendations
+- Updated deployment checklist
+
+Validation:
+- Verified with Spectral linter
+- Tested with API console
+- Validated all examples
+- Updated postman collection
+
+Location: docs/api/v2/* 

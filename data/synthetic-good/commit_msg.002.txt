@@ -1,0 +1,19 @@
+fix(security): patch JWT validation vulnerability in AuthMiddleware
+
+- Implement strict token expiration checking
+- Add JWK rotation support with 24h validity
+- Enforce nbf (Not Before) claim validation
+- Update jwt-validator to v2.5.0 (CVE-2024-1234)
+
+Security impact:
+- Prevents token replay attacks
+- Mitigates timing attack vulnerability
+- Adds forward secrecy for auth tokens
+
+Testing:
+- Added integration tests for token lifecycle
+- Verified against OWASP test suite
+- Load tested with 10k req/s throughput
+
+Migration required: Yes
+Deployment: Zero-downtime rolling update 

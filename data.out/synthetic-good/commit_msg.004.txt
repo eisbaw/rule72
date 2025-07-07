@@ -1,0 +1,21 @@
+feat(api): implement GraphQL pagination for /users endpoint
+
+- Add cursor-based pagination following Relay spec
+- Implement connection type for User queries
+- Support first/last/before/after parameters
+- Add total count and pageInfo fields
+
+API changes:
+- New schema: UserConnection, UserEdge, PageInfo
+- Deprecated: offset-based pagination fields
+- Added: cursor-based navigation fields
+
+Performance safeguards:
+- Max page size: 100 items
+- Request timeout: 30s
+- Query complexity limit: 150
+
+Backward compatibility:
+- Legacy endpoints remain functional
+- Deprecation period: 6 months
+- Migration guide: docs/graphql/PAGINATION.md

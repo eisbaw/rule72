@@ -1,0 +1,6 @@
+update deployment config
+
+changed nginx settings for better caching
+updated docker-compose with new services
+added staging environment
+deployment time: ~5 minutes 

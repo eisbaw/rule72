@@ -1,0 +1,6 @@
+Updated npm packages
+
+updated react to 18.2.0
+updated express to 4.18.2
+fixed breaking changes in component lifecycle
+hope this doesn't break anything! 

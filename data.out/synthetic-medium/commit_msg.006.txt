@@ -1,0 +1,5 @@
+UI improvements to dashboard
+
+- made the graphs responsive
+- changed color scheme to match brand
+- fixed layout on mobile devices looks much better now!

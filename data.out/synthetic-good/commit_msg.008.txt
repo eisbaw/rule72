@@ -1,0 +1,25 @@
+feat(observability): implement OpenTelemetry tracing infrastructure
+
+- Add OpenTelemetry SDK integration
+- Configure Jaeger exporter
+- Implement custom trace attributes
+- Add service boundary spans
+
+Monitoring improvements:
+- Request tracing across services
+- Error boundary detection
+- Performance bottleneck analysis
+- Resource utilization tracking
+
+Metrics added:
+- Request latency histograms
+- Error rate tracking
+- Resource saturation metrics
+- Custom business KPIs
+
+Storage impact:
+- Trace retention: 7 days
+- Storage rate: ~2GB/day
+- Sampling rate: 10%
+
+Configuration: terraform/monitoring/* 

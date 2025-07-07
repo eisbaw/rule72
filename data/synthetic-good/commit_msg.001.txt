@@ -1,0 +1,13 @@
+perf(api): optimize database query performance in UserService
+
+- Replace nested queries with single JOIN operation in getUserProfile
+- Add composite index on (user_id, status) in users table
+- Implement query result caching with 5min TTL
+
+Performance impact:
+- Query execution time: 850ms -> 95ms (89% reduction)
+- Peak memory usage: 145MB -> 42MB
+- Cache hit ratio: ~78% in production load test
+
+Breaking changes: None
+Migration: Run included 001_add_user_status_index.sql 

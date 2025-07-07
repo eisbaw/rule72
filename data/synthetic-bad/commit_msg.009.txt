@@ -1,0 +1,19 @@
+db stuff
+
+-- fixing the database or something
+DROP TABLE users;  -- oops
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL DEFAULT 'anonymous',
+    email TEXT COMMENT 'maybe valid email who knows',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    stuff JSON NULL
+);
+
+-- some queries that might work
+SELECT * FROM everything WHERE condition = true;
+UPDATE something SET value = 'new value' WHERE id IN (1,2,3,4,5,6,7,8,9,10);
+DELETE FROM logs WHERE timestamp < NOW() - INTERVAL '1000 YEARS';
+
+-- backup just in case
+-- jk no backup 

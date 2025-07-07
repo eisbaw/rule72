@@ -1,0 +1,15 @@
+config changes idk
+
+{ "name": "my-awesome-project", "version":
+"0.0.1-alpha-preview-beta-gamma-delta", "description": "it does stuff",
+"main": "index.js", "scripts": {
+    "start": "node stuff.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production --config webpack.config.js --progress --color --display-error-details --display-cached --display-reasons"
+}, "dependencies": {
+    "something": "^1.2.3",
+    "another-thing": "~4.5.6",
+    "yet-another-thing": "*"
+} }
+
+also changed some env vars but forgot which ones

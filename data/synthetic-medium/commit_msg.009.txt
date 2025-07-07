@@ -1,0 +1,6 @@
+docs: update API documentation
+
+Updated swagger docs for new endpoints
+Added examples for common use cases
+Fixed broken links in README
+still need to document error codes 
