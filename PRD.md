@@ -16,6 +16,7 @@ Provide a **stream-oriented** command-line filter (`rule72`) that reads an unfor
 - Preserving indentation and list structure when wrapping
 - Leaving untouched constructs that should never wrap (URLs, code fences, comments)
 - Unix-style streaming (stdin→stdout) for easy Git hook/editor integration
+- **Debug visualization** via SVG output showing classification and structure
 
 ### Out of scope
 - Content validation (Conventional Commits, spelling, etc.)
@@ -31,6 +32,7 @@ Provide a **stream-oriented** command-line filter (`rule72`) that reads an unfor
 2. **Paragraph Reflow**
    - For plain paragraphs (no leading whitespace except optional indent) wrap at **wrap-width** (default 72).
    - Break at word boundaries; a word that exceeds width moves entirely to next line.
+   - **Only reformat lines that exceed the width limit**; preserve short lines as-is.
 3. **List Handling**
    - Recognise list prefix patterns at identical indent depth:
      * `*` or `-` followed by space
@@ -52,6 +54,7 @@ Provide a **stream-oriented** command-line filter (`rule72`) that reads an unfor
      * `-w`, `--width` <N>: set wrap width (default 72)
      * `--headline-width` <N>: advisory width for headline (default 50; no hard split)
      * `--no-ansi`: strip ANSI color codes before measuring width
+     * `--debug-svg` <path>: output SVG visualization of parsing/classification
 8. **Exit Codes**
    - `0` success; formatted text on stdout
    - `1` input parse error (should not happen; fallback copies input)
@@ -63,6 +66,88 @@ Provide a **stream-oriented** command-line filter (`rule72`) that reads an unfor
 - **Portability**: POSIX shell usage; distributed as static Rust binary.
 
 ## 6. Algorithm Overview
+
+### Architecture Components
+
+#### 1. Lexer Module
+Operates at line granularity producing a vector of `CatLine` (categorical line) structures:
+
+```rust
+struct CatLine {
+    text: String,           // verbatim line content
+    line_number: usize,
+    indent: usize,          // leading spaces/tabs
+    probabilities: HashMap<Category, f32>,
+}
+
+enum Category {
+    ProseIntroduction,  // lines ending with ':'
+    ProseGeneral,       // fallback prose
+    List,               // dash/number/emoji bullets
+    Code,               // high special char density
+    Table,              // markdown table syntax
+    URL,                // http(s):// lines
+    Empty,              // blank lines
+}
+```
+
+#### 2. Context-Aware Classification
+Apply a functional approach using neighboring lines as context (similar to a convolution kernel):
+- Each line's final category considers ±2 lines of context
+- Diffusion/erosion of probabilities based on neighbors
+- No mutation; pure functional transformation
+
+#### 3. Tree Structure
+Build a hierarchical representation with `ContChunk` (contiguous chunk) nodes:
+
+```rust
+enum ContChunk {
+    Table(Vec<CatLine>),      // non-nesting
+    Paragraph(Vec<CatLine>),  // non-nesting
+    List(ListNode),           // can nest
+    Code(Vec<CatLine>),       // non-nesting
+}
+
+struct ListNode {
+    items: Vec<ListItem>,
+}
+
+struct ListItem {
+    bullet_line: CatLine,
+    continuation: Vec<CatLine>,
+    nested: Option<Box<ListNode>>,
+}
+```
+
+#### 4. Pretty Printer Module
+- Walks the tree structure
+- Only reformats lines exceeding width limit
+- Preserves structure and indentation
+- Outputs formatted text
+
+#### 5. Debug SVG Generator
+When `--debug-svg` is specified:
+- Renders monospaced text with classification overlays
+- Each `CatLine` shown with colored background based on category
+- `ContChunk` boundaries drawn as rectangles
+- Hover tooltips show probability scores
+- Visual tree structure representation
+
+### Processing Pipeline
+
+```
+Input Text
+    ↓
+Line Lexer → Vec<CatLine>
+    ↓
+Context Classification → Vec<CatLine> (with final categories)
+    ↓
+Tree Builder → Tree<ContChunk>
+    ↓
+Pretty Printer → Formatted Text
+    ↓
+Output (stdout + optional SVG)
+```
 
 ### Grammar
 ```
@@ -78,26 +163,6 @@ CommitMessage
 └── Footer*                 # one or more footer lines
 ```
 
-### Bounding-Rectangle Segmentation (marching-squares inspired)
-1. Convert input lines to a 2-D **text matrix**: rows = lines, columns = UTF-8 columns. Track each line's **indent depth** (spaces → depth; tab = 4).
-2. **Scan top-to-bottom** to discover **regions** where all lines share the same minimal indent (ignoring blank lines inside region). Think of indent depth as a height-map; stepping down into a deeper indent starts a potential _inner_ region, stepping back up closes the current region.
-3. Use a marching-squares–style edge-following algorithm to mark the **bounding rectangle** of every region:  
-   • `top = first line`, `bottom = last line` of region  
-   • `left = indent depth`, `right = max(line length)` within region.
-4. The result is a set of rectangles where each rectangle is either **fully outside** or **strictly inside** another rectangle; this naturally forms a **nesting tree** (outer = shallower indent).
-5. **Heuristic classification** (executed _after_ geometry is fixed):
-   - Bullet/number/emoji prefix on rectangle's first non-blank line → **List**
-   - Starts with "```" or ≥4-space constant indent → **Code**
-   - Contains ʻ|ʼ separators on every row → **Table**
-   - Single non-wrappable URL line (>wrap-width) → **URL**
-   - Otherwise → **Prose** (paragraph)
-6. **Reflow rules** applied per rectangle type:
-   - Prose & List: greedy minimum-line wrap at `wrap-width` (default 72); continuation indent aligns with first text col.
-   - Code, Table, URL: copied verbatim.
-7. **Rendering**: depth-first walk of rectangle tree → emit text; insert blank lines between sibling rectangles as in source; enforce mandatory blank lines (after Headline, before first Footer).
-8. **Footers** are detected _outside_ the rectangle scan (`^\w[\w-]*:`); rendered last, unchanged.
-9. Output to stdout; track column width with Unicode grapheme clusters.
-
 ## 7. CLI & Integration Examples
 ```bash
 # Format current commit message from Git hook
@@ -105,6 +170,9 @@ cat $1 | rule72 > $1.tmp && mv $1.tmp $1
 
 # Ad-hoc
 printf '%s\n' "A very loooooong headline that..." | rule72
+
+# Debug visualization
+cat commit.txt | rule72 --debug-svg debug.svg
 ```
 
 ## 8. Risks / Gotchas
