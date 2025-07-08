@@ -478,7 +478,12 @@ fn pretty_print(doc: &Document, opts: &Options) -> String {
             // - Previous chunk is a comment
             // - Previous chunk is a ProseIntroduction and current is a List (they should be connected)
             // - Previous chunk is a single-line Code ending with colon and current is a List
-            if !(prev_is_empty || curr_is_empty || matches!(prev_chunk, ContChunk::Comment(_)) || (prev_is_intro && curr_is_list) || (prev_is_code_intro && curr_is_list)) {
+            if !(prev_is_empty
+                || curr_is_empty
+                || matches!(prev_chunk, ContChunk::Comment(_))
+                || (prev_is_intro && curr_is_list)
+                || (prev_is_code_intro && curr_is_list))
+            {
                 output.push(String::new());
             }
         }

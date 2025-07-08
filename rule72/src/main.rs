@@ -37,7 +37,10 @@ fn main() -> Result<()> {
         .get_matches();
 
     let width: usize = matches.get_one::<String>("width").unwrap().parse()?;
-    let headline_width: usize = matches.get_one::<String>("headline-width").unwrap().parse()?;
+    let headline_width: usize = matches
+        .get_one::<String>("headline-width")
+        .unwrap()
+        .parse()?;
     let strip_ansi = matches.get_flag("no-ansi");
     let debug_svg = matches.get_one::<String>("debug-svg").cloned();
 
