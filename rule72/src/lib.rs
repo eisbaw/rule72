@@ -832,17 +832,30 @@ fn generate_debug_svg(doc: &Document, path: &str) {
     svg.push_str("    .chunk-rect { fill: none; stroke-width: 2; opacity: 0.5; }\n");
     svg.push_str("    .chunk-label { font-size: 10px; fill: #4c566a; }\n");
     svg.push_str("    .prob-tooltip { font-size: 10px; fill: #2e3440; }\n");
-    svg.push_str("    .ruler-line { stroke: #bf616a; stroke-width: 1; stroke-dasharray: 2,2; opacity: 0.7; }\n");
+    svg.push_str("    .ruler-dots { fill: #c3e88d; opacity: 1.0; font-family: monospace; font-size: 14px; }\n");
     svg.push_str("</style>\n");
     svg.push_str("<rect width=\"100%\" height=\"100%\" fill=\"#eceff4\"/>");
     svg.push('\n');
 
-    // Draw vertical ruler line at column 72
-    let ruler_x = margin + 72 * char_width;
-    svg.push_str(&format!(
-        r#"<line x1="{}" y1="{}" x2="{}" y2="{}" class="ruler-line"/>"#,
-        ruler_x, margin, ruler_x, svg_height - margin
-    ));
+    // Draw ruler dots for each line (at bottom z-order)
+    let mut ruler_y = margin;
+    let mut prev_chunk_type = "";
+    for (line, _depth, chunk_type) in &all_lines {
+        // Skip dots for empty lines that come directly after headline
+        let is_empty_after_headline =
+            line.final_category == Category::Empty && prev_chunk_type == "headline";
+
+        if !is_empty_after_headline {
+            let dots_count = if chunk_type == &"headline" { 50 } else { 72 };
+            let dots = "·".repeat(dots_count);
+            svg.push_str(&format!(
+                r#"<text x="{}" y="{}" class="ruler-dots">{}</text>"#,
+                margin, ruler_y, dots
+            ));
+        }
+        prev_chunk_type = chunk_type;
+        ruler_y += line_height;
+    }
 
     // Draw lines and collect chunk boundaries
     let mut y = margin;
@@ -872,9 +885,9 @@ fn generate_debug_svg(doc: &Document, path: &str) {
             Category::Footer => "#4c566a",
         };
 
-        // Background rect for category
+        // Background rect for category - transparent so ruler dots show through
         svg.push_str(&format!(
-            r#"<rect x="{}" y="{}" width="{}" height="{}" fill="{}" opacity="0.2"/>"#,
+            r#"<rect x="{}" y="{}" width="{}" height="{}" fill="{}" opacity="0.05"/>"#,
             margin,
             y - font_size,
             max_width * char_width,
