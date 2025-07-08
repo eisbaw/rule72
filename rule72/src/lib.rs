@@ -872,22 +872,22 @@ fn generate_debug_svg(doc: &Document, path: &str) {
             current_chunk_type = chunk_type;
         }
 
-        // Category color based on final classification
+        // Category color based on final classification - brighter colors for better visibility
         let category_color = match line.final_category {
-            Category::ProseIntroduction => "#d08770",
-            Category::ProseGeneral => "#2e3440",
-            Category::List => "#5e81ac",
-            Category::Code => "#b48ead",
-            Category::Table => "#88c0d0",
-            Category::URL => "#81a1c1",
-            Category::Empty => "#d8dee9",
-            Category::Comment => "#616e88",
-            Category::Footer => "#4c566a",
+            Category::ProseIntroduction => "#ff8c00",  // bright orange
+            Category::ProseGeneral => "#1e1e1e",       // dark gray
+            Category::List => "#0080ff",               // bright blue
+            Category::Code => "#ff40ff",               // bright magenta
+            Category::Table => "#00cccc",              // bright cyan
+            Category::URL => "#40a0ff",                // light blue
+            Category::Empty => "#e0e0e0",              // light gray
+            Category::Comment => "#808080",            // medium gray
+            Category::Footer => "#606060",             // dark gray
         };
 
-        // Background rect for category - transparent so ruler dots show through
+        // Background rect for category - increased opacity for better visibility
         svg.push_str(&format!(
-            r#"<rect x="{}" y="{}" width="{}" height="{}" fill="{}" opacity="0.05"/>"#,
+            r#"<rect x="{}" y="{}" width="{}" height="{}" fill="{}" opacity="0.15"/>"#,
             margin,
             y - font_size,
             max_width * char_width,
