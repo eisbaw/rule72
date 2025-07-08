@@ -946,12 +946,12 @@ Probabilities:
             chunk_color
         ));
 
-        // Chunk label
+        // Chunk label positioned in bottom right corner
+        let label_x = margin + max_width * char_width - 5; // Near right edge
+        let label_y = chunk_y + chunk_height - 3; // Near bottom edge
         svg.push_str(&format!(
-            r#"<text x="{}" y="{}" class="chunk-label">{}</text>"#,
-            margin - 10,
-            chunk_y + chunk_height / 2,
-            chunk_type
+            r#"<text x="{}" y="{}" class="chunk-label" text-anchor="end">{}</text>"#,
+            label_x, label_y, chunk_type
         ));
     }
 
