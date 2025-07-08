@@ -264,8 +264,9 @@ fn build_document(lines: Vec<CatLine>) -> Document {
             headline = Some(lines[i].clone());
             i += 1;
 
-            // Skip single blank line after headline
+            // Preserve empty line after headline as a body chunk
             if i < lines.len() && lines[i].final_category == Category::Empty {
+                body_chunks.push(ContChunk::Paragraph(vec![lines[i].clone()]));
                 i += 1;
             }
         }
