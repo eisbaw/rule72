@@ -18,8 +18,8 @@ feat: implement Hardware Abstraction Layer (HAL) architecture
 - Fix f-string syntax errors across multiple files
 - Add PRD.refactor.md documenting HAL architecture goals
 
-This implements Milestone 3 from the HAL refactoring plan, enabling fast
-SimPy-based testing instead of slow VM tests.
+This implements Milestone 3 from the HAL refactoring plan, enabling
+fast SimPy-based testing instead of slow VM tests.
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
 

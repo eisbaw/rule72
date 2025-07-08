@@ -6,12 +6,14 @@ FR: quelque chose s'est cassé
 JP: なにかが壊れた
 
 **IMPORTANT STUFF:**
+
 * did things
 * more things
 * even MORE things!!!
 
 > quote of the day:
 > it works on my machine
+
 > ¯\_(ツ)_/¯
 
 #yolo #coding #whoNeedsTests #production #friday 

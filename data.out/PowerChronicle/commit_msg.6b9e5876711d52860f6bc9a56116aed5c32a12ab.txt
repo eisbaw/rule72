@@ -37,8 +37,7 @@ software patterns.
 - StateManager: State tracking and change detection coordination
 - Monitor: Minimal orchestration with clear responsibilities
 
-🧪 **Comprehensive Testing**
-     (tests/unit/test_improved_architecture.py)
+🧪 **Comprehensive Testing** (tests/unit/test_improved_architecture.py)
 - 22 unit tests covering all new architectural components
 - Configuration management testing with environment scenarios
 - Circuit breaker behavior testing in all states

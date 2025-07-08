@@ -1,15 +1,29 @@
 css stuff
 
-<div class="container"> <h1>Important Title</h1> <p>This is some text
-that explains nothing</p> </div>
+<div class="container">
+  <h1>Important Title</h1>
+  <p>This is some text that explains nothing</p>
 
-<style> .container { display: flex; flex-direction: column;
-justify-content: center; align-items: center; background:
-linear-gradient(45deg, #ff0000, #00ff00, #0000ff); animation: rainbow 1s
-infinite; }
+</div>
 
-/* makes things pretty */ @keyframes rainbow { 0% { background-position:
-0% 50%; } 50% { background-position: 100% 50%; } 100% {
-background-position: 0% 50%; } } </style>
+<style>
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff);
+  animation: rainbow 1s infinite;
 
-changed some colors or whatever
+}
+
+/* makes things pretty */
+@keyframes rainbow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+
+}
+</style>
+
+changed some colors or whatever 

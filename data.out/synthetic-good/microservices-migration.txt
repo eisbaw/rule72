@@ -16,13 +16,17 @@ Service Boundaries:
    - User CRUD operations
    - Profile management
    - Preference handling
-   - Auth delegation Size: 24k LoC -> 8k LoC (66% reduction)
+   - Auth delegation
+
+   Size: 24k LoC -> 8k LoC (66% reduction)
 
 2. Remaining Monolith:
    - Order processing
    - Inventory management
    - Payment processing
-   - Reporting Size: 156k LoC (to be decomposed in future phases)
+   - Reporting
+
+   Size: 156k LoC (to be decomposed in future phases)
 
 Infrastructure Changes:
 - Kubernetes cluster setup (EKS)
@@ -42,7 +46,9 @@ Data Migration:
 - Implemented dual-write pattern
 - Zero-downtime migration strategy
 - Automatic data verification
-- Rollback capabilities Tables migrated:
+- Rollback capabilities
+
+Tables migrated:
 - users (12M rows)
 - profiles (8M rows)
 - preferences (15M rows)

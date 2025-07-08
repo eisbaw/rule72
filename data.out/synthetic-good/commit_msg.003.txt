@@ -19,4 +19,4 @@ Breaking changes:
 - EventProcessor interface updated
 - Config requires new MQ connection string
 
-Migration guide: docs/migrations/EVENT_QUEUE_MIGRATION.md
+Migration guide: docs/migrations/EVENT_QUEUE_MIGRATION.md 

@@ -5,7 +5,8 @@ configuration structure, SystemD services, and deployment tools.
 
 Components:
 • Comprehensive NixOS module structure with main powerchronicle module
-• Individual service modules for event-chronicle, policy-engine, action-executor, analytics
+• Individual service modules for event-chronicle, policy-engine,
+    action-executor, analytics
 • Full SystemD service definitions with proper dependencies and security
 • Package definitions with complete dependency management
 • Command line utilities and management tools
@@ -25,9 +26,12 @@ Installation Examples:
 • Laptop-optimized configuration (aggressive power saving)
 
 Features:
-• Complete service management utilities (powerchronicle-control, powerchronicle-status)
-• Log management and viewing tools (powerchronicle-logs, power-events, power-rules, power-actions)
-• Analytics and reporting tools (power-analyze, power-visualize, power-report)
+• Complete service management utilities (powerchronicle-control,
+    powerchronicle-status)
+• Log management and viewing tools (powerchronicle-logs, power-events,
+    power-rules, power-actions)
+• Analytics and reporting tools (power-analyze, power-visualize,
+    power-report)
 • Debug and diagnostic utilities for troubleshooting
 • Automated log rotation and maintenance
 • Desktop integration with .desktop files

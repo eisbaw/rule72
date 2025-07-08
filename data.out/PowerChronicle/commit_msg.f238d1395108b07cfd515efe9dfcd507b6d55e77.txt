@@ -1,2 +1,1 @@
 nix: simplify shellHook in shell.nix
-

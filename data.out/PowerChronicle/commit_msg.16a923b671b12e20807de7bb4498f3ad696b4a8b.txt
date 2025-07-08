@@ -9,7 +9,7 @@ feat: add WiFi detection module and refactor network checks
   detection
 
 This refactor centralizes WiFi detection logic, improving reliability.
-
-Impact: enhances network connectivity checks without altering existing behavior.
-Gotchas: ensure all dependencies are installed for new tools in shell.nix.
+Impact: enhances network connectivity checks without altering existing
+behavior. Gotchas: ensure all dependencies are installed for new tools
+in shell.nix.
 

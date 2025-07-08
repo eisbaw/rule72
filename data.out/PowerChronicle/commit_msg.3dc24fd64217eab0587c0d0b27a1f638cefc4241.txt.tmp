@@ -1,0 +1,17 @@
+fix: resolve matplotlib legend warning in analytics chart generation
+
+- Add conditional legend display in _plot_actions_chart method
+- Only call ax.legend() when there are labeled artists (decision_times
+  or action_times)
+- Prevents "No artists with labels found" matplotlib UserWarning
+- Maintains chart functionality while eliminating test warnings
+
+Test Results:
+
+✅ All 25 analytics tests pass without warnings
+✅ All 148 total tests pass with 0 warnings
+✅ Chart generation works correctly with and without data
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>

@@ -18,7 +18,8 @@ refactor: modularize Justfile into aspect-specific sub-justfiles
 Benefits:
 - Single responsibility: Each module handles one development aspect
 - Better maintainability: Changes isolated to relevant modules
-- Cleaner interface: Main workflows clearly separated from implementation
+- Cleaner interface: Main workflows clearly separated from
+  implementation
 - Comprehensive coverage: All development tasks properly categorized
 
 🤖 Generated with [Claude Code](https://claude.ai/code)

@@ -18,4 +18,4 @@ Performance safeguards:
 Backward compatibility:
 - Legacy endpoints remain functional
 - Deprecation period: 6 months
-- Migration guide: docs/graphql/PAGINATION.md
+- Migration guide: docs/graphql/PAGINATION.md 

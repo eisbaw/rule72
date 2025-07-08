@@ -10,5 +10,4 @@ Performance impact:
 - Cache hit ratio: ~78% in production load test
 
 Breaking changes: None
-
 Migration: Run included 001_add_user_status_index.sql 

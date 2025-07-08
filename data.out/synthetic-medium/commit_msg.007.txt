@@ -1,4 +1,6 @@
 performance: optimize image loading
 
-implemented lazy loading for images compressed all images in /assets
-page load time decreased by 2 seconds @TODO: implement webp format later
+implemented lazy loading for images
+compressed all images in /assets
+page load time decreased by 2 seconds
+@TODO: implement webp format later 

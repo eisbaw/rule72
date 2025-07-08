@@ -1,4 +1,3 @@
-use regex::Regex;
 use std::collections::HashMap;
 use unicode_segmentation::UnicodeSegmentation;
 use unicode_width::UnicodeWidthStr;
@@ -425,11 +424,19 @@ fn pretty_print(doc: &Document, opts: &Options) -> String {
     // Print headline
     if let Some(headline) = &doc.headline {
         output.push(headline.text.clone());
-        output.push(String::new()); // Blank line after headline
+        // Don't automatically add blank line - let the body chunks handle spacing
     }
     
     // Print body chunks
     for (idx, chunk) in doc.body_chunks.iter().enumerate() {
+        // Add blank line between headline and first body chunk if needed
+        if idx == 0 && doc.headline.is_some() {
+            let curr_is_empty = matches!(chunk, ContChunk::Paragraph(lines) if lines.len() == 1 && lines[0].final_category == Category::Empty);
+            if !curr_is_empty {
+                output.push(String::new()); // Add blank line between headline and body
+            }
+        }
+        
         // Add blank line between non-empty chunks (but not before the first chunk)
         if idx > 0 {
             let prev_chunk = &doc.body_chunks[idx - 1];
@@ -575,8 +582,7 @@ fn count_special_chars(s: &str) -> usize {
 }
 
 fn is_footer_line(line: &str) -> bool {
-    let footer_re = Regex::new(r"^[A-Za-z][A-Za-z0-9-]*: ").unwrap();
-    // Common footer tags
+    // Common footer tags - be very specific about what we consider footers
     let footer_tags = [
         "Signed-off-by:",
         "Co-authored-by:",
@@ -600,23 +606,9 @@ fn is_footer_line(line: &str) -> bool {
         }
     }
     
-    // Also check for generic pattern but exclude common non-footer patterns
-    if footer_re.is_match(line) {
-        // Exclude conventional commit types
-        let conventional_commits = ["feat:", "fix:", "docs:", "style:", "refactor:", 
-                                   "perf:", "test:", "build:", "ci:", "chore:", "revert:"];
-        for cc in &conventional_commits {
-            if line.to_lowercase().starts_with(cc) {
-                return false;
-            }
-        }
-        
-        // If it's not a conventional commit and matches the pattern, might be a footer
-        // But only if it's not the first line (headlines can have colons)
-        true
-    } else {
-        false
-    }
+    // Don't use generic pattern matching - it's too broad and catches regular content
+    // like "EN: something broke" which are clearly not footers
+    false
 }
 
 fn is_list_item(line: &str) -> bool {

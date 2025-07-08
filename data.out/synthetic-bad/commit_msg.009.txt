@@ -1,7 +1,9 @@
 db stuff
 
--- fixing the database or something DROP TABLE users; -- oops CREATE
-TABLE users (
+-- fixing the database or something
+DROP TABLE users;  -- oops
+CREATE TABLE users (
+
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL DEFAULT 'anonymous',
     email TEXT COMMENT 'maybe valid email who knows',
@@ -14,4 +16,5 @@ TABLE users (
 (1,2,3,4,5,6,7,8,9,10); DELETE FROM logs WHERE timestamp < NOW() -
 INTERVAL '1000 YEARS';
 
--- backup just in case -- jk no backup
+-- backup just in case
+-- jk no backup 

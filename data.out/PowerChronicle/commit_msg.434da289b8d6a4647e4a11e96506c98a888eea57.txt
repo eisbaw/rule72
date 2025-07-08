@@ -8,7 +8,8 @@ Components:
 • ASCII timeline generator with multi-track display
 • SVG chart generation using matplotlib
 • Real-time interactive dashboard with live updates
-• Command line tools (power-visualize, power-dashboard, power-analyze, power-report)
+• Command line tools (power-visualize, power-dashboard, power-analyze,
+    power-report)
 • Pattern analysis and statistical reporting
 • Cross-stream correlation and traceability
 

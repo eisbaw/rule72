@@ -1,4 +1,6 @@
 security fixes in auth middleware
 
-fixed XSS vulnerability in user input updated password hashing algorithm
-added rate limiting to login endpoint need to check other endpoints too
+fixed XSS vulnerability in user input
+updated password hashing algorithm
+added rate limiting to login endpoint
+need to check other endpoints too 
