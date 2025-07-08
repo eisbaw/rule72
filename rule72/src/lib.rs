@@ -832,9 +832,17 @@ fn generate_debug_svg(doc: &Document, path: &str) {
     svg.push_str("    .chunk-rect { fill: none; stroke-width: 2; opacity: 0.5; }\n");
     svg.push_str("    .chunk-label { font-size: 10px; fill: #4c566a; }\n");
     svg.push_str("    .prob-tooltip { font-size: 10px; fill: #2e3440; }\n");
+    svg.push_str("    .ruler-line { stroke: #bf616a; stroke-width: 1; stroke-dasharray: 2,2; opacity: 0.7; }\n");
     svg.push_str("</style>\n");
     svg.push_str("<rect width=\"100%\" height=\"100%\" fill=\"#eceff4\"/>");
     svg.push('\n');
+
+    // Draw vertical ruler line at column 72
+    let ruler_x = margin + 72 * char_width;
+    svg.push_str(&format!(
+        r#"<line x1="{}" y1="{}" x2="{}" y2="{}" class="ruler-line"/>"#,
+        ruler_x, margin, ruler_x, svg_height - margin
+    ));
 
     // Draw lines and collect chunk boundaries
     let mut y = margin;
