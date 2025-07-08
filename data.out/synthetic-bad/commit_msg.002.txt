@@ -5,16 +5,13 @@ function doStuff() {
   // old code was bad
   // new code is better trust me
   const x = 42;
-
   const y = ['a', 'b', 'c'];
   for(let i=0; i<1000; i++) {
     console.log('debugging...');
     console.log('more debugging...');
     console.log('even more debugging...');
   }
-
   return x + y; // this probably works
-
 }
 ```
 

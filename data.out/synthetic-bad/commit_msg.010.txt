@@ -3,11 +3,8 @@ WIP: DO NOT MERGE (but probably will anyway) 🚀
 BREAKING CHANGES:
 * everything
 - nothing
-
 1 maybe something
-
 2. who knows really
-
 3 who knows really
 
 Environment variables (don't tell anyone):
@@ -17,11 +14,9 @@ SECRET_TOKEN=super_secret_token_that_should_not_be_here
 
 Random notes:
   -asked chatgpt to fix it
-
   - copied some code from reddit   
   -  stackoverflow said it would work
   - changed stuff until it worked  
-
 - didn't test anything  
  - pushed directly to main
 - crossing fingers   

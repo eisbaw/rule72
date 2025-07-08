@@ -3,7 +3,6 @@ db stuff
 -- fixing the database or something
 DROP TABLE users;  -- oops
 CREATE TABLE users (
-
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL DEFAULT 'anonymous',
     email TEXT COMMENT 'maybe valid email who knows',

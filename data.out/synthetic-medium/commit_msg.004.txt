@@ -1,9 +1,7 @@
 refactor user service class
 
 split UserService into smaller classes
-
 - UserAuth
 - UserProfile
 - UserPreferences
-
 code is more organized now but needs tests 

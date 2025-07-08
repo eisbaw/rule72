@@ -161,3 +161,13 @@ Future Improvements:
 
 
 References:
+- Incident report: SEC-IR-2024-001
+- Security advisory: CVE-2024-1234
+- Postmortem: docs/incidents/2024-01-supply-chain.md
+- Action items: JIRA-SEC-2024-Q1
+
+Team:
+Security: @security-team
+Infrastructure: @devops-team
+Development: @dev-leads
+Compliance: @compliance-team 

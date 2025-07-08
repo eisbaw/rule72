@@ -3,7 +3,6 @@ css stuff
 <div class="container">
   <h1>Important Title</h1>
   <p>This is some text that explains nothing</p>
-
 </div>
 
 <style>
@@ -14,7 +13,6 @@ css stuff
   align-items: center;
   background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff);
   animation: rainbow 1s infinite;
-
 }
 
 /* makes things pretty */
@@ -22,7 +20,6 @@ css stuff
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-
 }
 </style>
 

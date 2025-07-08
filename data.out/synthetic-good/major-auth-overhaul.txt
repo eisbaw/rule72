@@ -74,11 +74,9 @@ Documentation:
 
 Rollback Plan:
 Automated rollback procedure in place:
-
 1. Revert infrastructure changes (terraform/auth/rollback.tf)
 2. Restore database snapshot
 3. Switch DNS records
-
 Maximum estimated downtime: 5 minutes
 
 Related Issues:

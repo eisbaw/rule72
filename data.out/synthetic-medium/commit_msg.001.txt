@@ -3,5 +3,4 @@ Added user authentication with Google OAuth
 - Implemented Google OAuth2 login flow in auth.js
 - Added new route /auth/google 
 - Config file updated with client secrets
-
 TODO: Need to add error handling later 
