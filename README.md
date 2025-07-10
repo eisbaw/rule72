@@ -6,7 +6,7 @@ blocks, footers, emoji bullets, etc.). It reads from **stdin** and writes the
 reformatted message to **stdout** so it plugs into editors, Git hooks, pipes,
 or batch jobs.
 
-Performance: ~1.5ms per commit message on a laptop ⚡.\
+Performance: ~1.5ms per commit message on a laptop ⚡.  
 Run `just profile` for detailed benchmarks across the test corpus.
 
 ---
@@ -33,6 +33,7 @@ git show --format='%B' --no-patch HEAD | rule72 > /tmp/msg && git commit --amend
 
 # Ad-hoc from shell
 printf '%s\n' "fix: extremely long headline ..." | rule72
+```
 
 CLI flags:
 ```
@@ -44,7 +45,8 @@ CLI flags:
 ```
 
 In the repo you can apply `rule72` across all test-vectors and inspect:
-```
+
+```bash
 # Batch-reformat repository message corpus (Justfile target)
 just reflow-data   # Updates data.out/ - output reflowed references
 just compare-data  # Diff original vs reflowed with colordiff/less
@@ -68,9 +70,9 @@ can aid in troubleshooting formatting decisions.
 ---
 ## Test-Catalogue: `data/` vs `data.out/`
 
-The repo ships with a large set of real-world commit messages under `data/`.\
+The repo ships with a large set of real-world commit messages under `data/`.  
 Running `just reflow-data` pipes every `*.txt` file through `rule72`, writing
-the result to **identical relative paths** under `data.out/`.\
+the result to **identical relative paths** under `data.out/`.  
 `just compare-data` opens a unified color diff so you can inspect:
 
 * Correct wrapping of long paragraphs
@@ -125,7 +127,7 @@ Build tooling via **Nix** + **Just** (`shell.nix`, `Justfile`).
 ## Related Tools
 
 * [`commitmsgfmt`](https://mkjeldsen.gitlab.io/blog/introducing-commitmsgfmt/) –
-  Vim filter that inspired many rules; `rule72` generalises with rectangle
-  parser & Rust CLI.
+  Vim filter that inspired many rules; `rule72` generalises with line-by-line
+  classification & Rust CLI.
 * `fmt(1)`, `par(1)` – generic text wrappers (no commit-specific
   semantics).
