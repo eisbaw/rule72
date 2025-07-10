@@ -174,9 +174,10 @@ pub fn generate_debug_svg(doc: &Document, path: &str) {
             category_color
         ));
 
-        // Text line
+        // Text line - trim leading whitespace since we position based on indent
         let escaped_text = line
             .text
+            .trim_start() // Remove leading whitespace to avoid double indentation
             .replace('&', "&amp;")
             .replace('<', "&lt;")
             .replace('>', "&gt;");
