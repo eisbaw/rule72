@@ -5,6 +5,21 @@ All notable changes to the rule72 commit message reflow tool will be documented 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2025-07-10
+
+### Added
+- **Debug Tracing**: New `--debug-trace` flag provides comprehensive pipeline visibility with automatic file:line prefixes
+- **Automated Trace Prefixes**: Debug traces now include programmatically determined file and line information
+
+### Fixed
+- **SVG Double Indentation**: Fixed SVG debug output incorrectly showing extra leading spaces for indented lines
+- **Import Cleanup**: Removed unused imports detected by linting
+
+### Technical
+- Enhanced lexer with detailed trace output for explainability
+- Created debug_trace! macro for consistent logging with automatic source location
+- Updated function signatures to support Options parameter throughout the parsing pipeline
+
 ## [0.2.0] - 2025-07-08
 
 ### Added
