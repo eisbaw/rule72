@@ -5,6 +5,14 @@ All notable changes to the rule72 commit message reflow tool will be documented 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2025-07-10
+
+### Documentation
+- **Updated README**: Improved documentation with v0.2.1 features and current performance metrics
+- **Performance Metrics**: Updated performance from ~2ms to ~1.5ms based on latest profiling results
+- **Debug Features**: Added comprehensive documentation for new `--debug-svg` and `--debug-trace` CLI flags
+- **Markdown Formatting**: Improved line wrapping and readability throughout README
+
 ## [0.2.1] - 2025-07-10
 
 ### Added

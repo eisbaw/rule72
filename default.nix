@@ -2,7 +2,7 @@
 
 rustPlatform.buildRustPackage rec {
   pname = "rule72";
-  version = "0.2.1";
+  version = "0.2.2";
 
   # The crate lives in a subdirectory
   src = ./rule72;
