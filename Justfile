@@ -40,6 +40,34 @@ nix-test:
   echo "Testing --help..."
   "$RESULT/bin/rule72" --help
 
+# Check if data.out/ has unstaged changes (fail if so, staged changes are OK)
+check-data-changes:
+  #!/usr/bin/env bash
+  set -euo pipefail
+  echo "Checking for unstaged changes in data.out/..."
+  
+  # Check if data.out/ exists
+  if [ ! -d "data.out" ]; then
+    echo "❌ data.out/ directory not found. Run 'just reflow-data' first."
+    exit 1
+  fi
+  
+  # Check for unstaged changes in data.out/
+  if git diff --quiet --exit-code -- data.out/; then
+    echo "✅ No unstaged changes in data.out/"
+    exit 0
+  else
+    echo "❌ Found unstaged changes in data.out/"
+    echo "This suggests code changes have affected output formatting."
+    echo "Please review the changes and stage them if they are intentional:"
+    echo ""
+    git diff --stat -- data.out/
+    echo ""
+    echo "To stage changes: git add data.out/"
+    echo "To see detailed diff: git diff data.out/"
+    exit 1
+  fi
+
 # Profile performance on entire corpus (wall-clock time)
 profile: build
   #!/usr/bin/env bash

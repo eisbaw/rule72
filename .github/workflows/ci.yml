@@ -52,6 +52,15 @@ jobs:
         continue-on-error: true
         run: nix-shell --run "just compare-data"
 
+  check-data-changes:
+    needs: reflow-data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v25
+      - name: Check for unstaged changes in data.out/
+        run: nix-shell --run "just check-data-changes"
+
   nix-test:
     runs-on: ubuntu-latest
     steps:
