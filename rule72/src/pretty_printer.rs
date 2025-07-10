@@ -150,9 +150,10 @@ mod tests {
             headline_width: 50,
             strip_ansi: false,
             debug_svg: None,
+            debug_trace: false,
         };
 
-        let lexed = lex_lines(&lines);
+        let lexed = lex_lines(&lines, &opts);
         let classified = classify_with_context(lexed);
         let document = build_document(classified);
         let output = pretty_print(&document, &opts);

@@ -7,6 +7,7 @@ pub struct Options {
     pub headline_width: usize,
     pub strip_ansi: bool,
     pub debug_svg: Option<String>,
+    pub debug_trace: bool,
 }
 
 /// Line categories for classification

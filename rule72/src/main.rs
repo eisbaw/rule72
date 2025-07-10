@@ -34,6 +34,12 @@ fn main() -> Result<()> {
                 .value_name("PATH")
                 .help("Output SVG visualization of parsing/classification"),
         )
+        .arg(
+            Arg::new("debug-trace")
+                .long("debug-trace")
+                .help("Output detailed trace of parsing pipeline")
+                .action(clap::ArgAction::SetTrue),
+        )
         .get_matches();
 
     let width: usize = matches.get_one::<String>("width").unwrap().parse()?;
@@ -43,12 +49,14 @@ fn main() -> Result<()> {
         .parse()?;
     let strip_ansi = matches.get_flag("no-ansi");
     let debug_svg = matches.get_one::<String>("debug-svg").cloned();
+    let debug_trace = matches.get_flag("debug-trace");
 
     let opts = Options {
         width,
         headline_width,
         strip_ansi,
         debug_svg,
+        debug_trace,
     };
 
     let mut input = String::new();

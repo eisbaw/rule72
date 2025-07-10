@@ -22,7 +22,7 @@ pub fn reflow(input: &str, opts: &Options) -> String {
     let lines: Vec<&str> = input.lines().map(|l| l.trim_end_matches('\r')).collect();
 
     // Lex lines into CatLines
-    let cat_lines = lex_lines(&lines);
+    let cat_lines = lex_lines(&lines, opts);
 
     // Apply context-aware classification
     let classified_lines = classify_with_context(cat_lines);
@@ -52,6 +52,7 @@ mod tests {
             headline_width: 50,
             strip_ansi: false,
             debug_svg: None,
+            debug_trace: false,
         };
 
         let output = reflow(input, &opts);

@@ -1,17 +1,22 @@
 use std::collections::HashMap;
 
-use crate::types::{CatLine, Category};
-use crate::utils::{count_indent, count_special_chars, is_footer_line, is_list_item};
+use crate::types::{CatLine, Category, Options};
+use crate::utils::{count_indent, count_special_chars, debug_trace, is_footer_line, is_list_item};
 
 /// Lexer: convert raw lines to CatLines with initial probabilities
-pub fn lex_lines(lines: &[&str]) -> Vec<CatLine> {
+pub fn lex_lines(lines: &[&str], opts: &Options) -> Vec<CatLine> {
+    debug_trace!(opts, "=== LEXER PHASE ===");
+    debug_trace!(opts, "Processing {} input lines", lines.len());
+
     lines
         .iter()
         .enumerate()
         .map(|(idx, line)| {
+            debug_trace!(opts, "Line {}: {:?}", idx + 1, line);
             let mut probabilities = HashMap::new();
             let indent = count_indent(line);
             let trimmed = line.trim();
+            debug_trace!(opts, "  Indent: {}, Trimmed: {:?}", indent, trimmed);
 
             // Initial probabilities based on content patterns
             if trimmed.is_empty() {
@@ -53,6 +58,8 @@ pub fn lex_lines(lines: &[&str]) -> Vec<CatLine> {
                 .map(|(cat, _)| *cat)
                 .unwrap_or(Category::ProseGeneral);
 
+            debug_trace!(opts, "  → Final classification: {:?}", final_category);
+
             CatLine {
                 text: line.to_string(),
                 line_number: idx,
@@ -82,7 +89,14 @@ mod tests {
             "Signed-off-by: Author <email>",
         ];
 
-        let cat_lines = lex_lines(&lines);
+        let opts = Options {
+            width: 72,
+            headline_width: 50,
+            strip_ansi: false,
+            debug_svg: None,
+            debug_trace: false,
+        };
+        let cat_lines = lex_lines(&lines, &opts);
 
         assert_eq!(cat_lines.len(), 9);
         assert_eq!(cat_lines[0].final_category, Category::Comment);

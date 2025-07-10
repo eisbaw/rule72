@@ -1,6 +1,17 @@
 use unicode_segmentation::UnicodeSegmentation;
 use unicode_width::UnicodeWidthStr;
 
+/// Debug trace macro that includes file and line information
+macro_rules! debug_trace {
+    ($opts:expr, $fmt:literal $(, $($arg:tt)*)?) => {
+        if $opts.debug_trace {
+            eprintln!("[{}:{}] {}", file!(), line!(), format!($fmt $(, $($arg)*)?));
+        }
+    };
+}
+
+pub(crate) use debug_trace;
+
 pub fn count_indent(line: &str) -> usize {
     line.chars()
         .take_while(|&c| c == ' ' || c == '\t')

@@ -63,6 +63,6 @@ profile: build
 
 # Debug a single commit message, diff and show SVG
 debug txtfile: build
-  rule72/target/release/rule72 --debug-svg {{txtfile}}.svg < {{txtfile}} > {{txtfile}}.tmp
+  rule72/target/release/rule72 --debug-trace --debug-svg {{txtfile}}.svg < {{txtfile}} > {{txtfile}}.tmp
   -colordiff -U10 {{txtfile}} {{txtfile}}.tmp
   @feh {{txtfile}}.svg || true
