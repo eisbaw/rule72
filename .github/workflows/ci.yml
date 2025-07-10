@@ -2,8 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "*" ]
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
 
 env:
   NIX_PATH: "nixpkgs=channel:nixos-25.05"
@@ -15,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v25
       - name: Build release binary
-        run: nix-shell --pure --run "just build"
+        run: nix-shell --run "just build"
 
   lint:
     runs-on: ubuntu-latest
@@ -23,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v25
       - name: Run clippy lint
-        run: nix-shell --pure --run "just lint"
+        run: nix-shell --run "just lint"
 
   test:
     runs-on: ubuntu-latest
@@ -31,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v25
       - name: Execute unit tests
-        run: nix-shell --pure --run "just test"
+        run: nix-shell --run "just test"
 
   reflow-data:
     runs-on: ubuntu-latest
@@ -39,7 +40,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: cachix/install-nix-action@v25
       - name: Run reflow on test catalogue
-        run: nix-shell --pure --run "just reflow-data"
+        run: nix-shell --run "just reflow-data"
 
   compare-data:
     needs: reflow-data
@@ -49,7 +50,7 @@ jobs:
       - uses: cachix/install-nix-action@v25
       - name: Compare original vs reflowed corpus (non-fatal)
         continue-on-error: true
-        run: nix-shell --pure --run "just compare-data"
+        run: nix-shell --run "just compare-data"
 
   nix-test:
     runs-on: ubuntu-latest
