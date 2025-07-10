@@ -87,6 +87,27 @@ This serves as an integration regression suite on top of unit tests.
 
 Simple and effective line-by-line processing with contextual refinement.
 
+```mermaid
+graph TD
+    A[Raw Text Lines] --> B[Lexer: Line Classification]
+    B --> |Probability Scores| C[Classifier: 4-Point FIR Kernel]
+    C --> |Refined Categories| D[Tree Builder: Sequential Chunking]
+    D --> |Document Structure| E[Pretty Printer: Content-Aware Formatting]
+    E --> F[Formatted Output]
+    
+    B1[Pattern Matching<br/>Indentation Analysis<br/>Content Heuristics] --> B
+    C1[±2 Neighbor Context<br/>Probability Adjustment<br/>Center Excluded] --> C
+    D1[Group Similar Lines<br/>List Detection<br/>Introduction Merging] --> D
+    E1[Greedy Text Wrapping<br/>Verbatim Code/Tables<br/>Proper Spacing] --> E
+    
+    style A fill:#e1f5fe
+    style F fill:#e8f5e8
+    style B fill:#fff3e0
+    style C fill:#fce4ec
+    style D fill:#f3e5f5
+    style E fill:#e0f2f1
+```
+
 1. **Line Classification**: Process each line individually, computing indentation
    and assigning probability scores to categories (Prose, List, Code, Table, 
    Comment, Footer, URL, etc.) based on content patterns.
