@@ -1,3 +1,9 @@
+//! Lexical analysis: Convert raw text lines into classified Category Lines.
+//!
+//! This module performs the first stage of processing, analyzing each line
+//! individually to assign initial probability scores to different categories
+//! (prose, list, code, table, etc.) based on content patterns and indentation.
+
 use std::collections::HashMap;
 
 use crate::types::{CatLine, Category, Options};

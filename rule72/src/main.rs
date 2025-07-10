@@ -1,11 +1,20 @@
+//! Command-line interface for rule72 commit message formatter.
+//!
+//! Reads commit messages from stdin and outputs formatted text to stdout,
+//! making it suitable for Git hooks, editor integration, and batch processing.
+
 use anyhow::Result;
 use clap::{Arg, Command};
 use rule72::{reflow, Options};
 use std::io::{self, Read};
 
+/// Main entry point for the rule72 CLI application.
+///
+/// Parses command-line arguments, reads from stdin, applies text reflow,
+/// and outputs the result to stdout.
 fn main() -> Result<()> {
     let matches = Command::new("rule72")
-        .version("0.1.0")
+        .version("0.2.2")
         .about("Git commit message formatter")
         .arg(
             Arg::new("width")

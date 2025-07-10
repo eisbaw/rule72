@@ -1,3 +1,9 @@
+//! SVG debug visualization for parsing and classification analysis.
+//!
+//! This module generates visual representations of how the parser classifies
+//! and structures commit messages, showing line categories, indentation,
+//! and probability scores in an SVG format for explainability.
+
 use std::fs::File;
 use std::io::Write;
 

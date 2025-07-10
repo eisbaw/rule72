@@ -1,3 +1,23 @@
+//! # rule72 - Git commit message reflow tool
+//!
+//! A smart command-line formatter that rewraps Git commit messages while preserving
+//! structure (headlines, paragraphs, lists, code blocks, footers, etc.).
+//!
+//! ## Algorithm
+//! 1. **Lexical Analysis**: Classify each line with probability scores
+//! 2. **Context Refinement**: Use 4-point FIR-like kernel on neighbors
+//! 3. **Document Building**: Group lines into semantic chunks
+//! 4. **Pretty Printing**: Format each chunk type appropriately
+//!
+//! ## Example
+//! ```rust
+//! use rule72::{reflow, Options};
+//!
+//! let input = "Very long commit message that needs to be wrapped...";
+//! let opts = Options::default();
+//! let output = reflow(input, &opts);
+//! ```
+
 // Public modules
 pub mod classifier;
 pub mod debug;

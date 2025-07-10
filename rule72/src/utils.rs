@@ -1,3 +1,9 @@
+//! Utility functions for text analysis, formatting, and debug tracing.
+//!
+//! This module provides helper functions used throughout the codebase for
+//! indentation counting, text wrapping, list detection, footer recognition,
+//! and debug output with automatic file:line prefixes.
+
 use unicode_segmentation::UnicodeSegmentation;
 use unicode_width::UnicodeWidthStr;
 
@@ -12,6 +18,8 @@ macro_rules! debug_trace {
 
 pub(crate) use debug_trace;
 
+/// Count leading whitespace characters (spaces and tabs) in a line.
+/// Tabs are counted as single characters for simplicity.
 pub fn count_indent(line: &str) -> usize {
     line.chars()
         .take_while(|&c| c == ' ' || c == '\t')
@@ -19,12 +27,17 @@ pub fn count_indent(line: &str) -> usize {
         .sum()
 }
 
+/// Count special characters that might indicate code content.
+/// Returns the number of characters that are typically found in code
+/// (symbols, punctuation, etc.) rather than natural language.
 pub fn count_special_chars(s: &str) -> usize {
     s.chars()
         .filter(|c| !c.is_alphanumeric() && !c.is_whitespace())
         .count()
 }
 
+/// Check if a line matches Git footer patterns (tag: value format).
+/// Recognizes common Git trailers like "Signed-off-by:", "Co-authored-by:", etc.
 pub fn is_footer_line(line: &str) -> bool {
     // Common footer tags - be very specific about what we consider footers
     let footer_tags = [
@@ -55,6 +68,8 @@ pub fn is_footer_line(line: &str) -> bool {
     false
 }
 
+/// Detect if a line is a list item (bullet, numbered, or emoji).
+/// Recognizes common list markers including markdown bullets, numbers, and emoji.
 pub fn is_list_item(line: &str) -> bool {
     let trimmed = line.trim_start();
     if trimmed.starts_with("* ") || trimmed.starts_with("- ") {
@@ -83,6 +98,9 @@ pub fn is_list_item(line: &str) -> bool {
     false
 }
 
+/// Extract the bullet prefix from a list item line.
+/// Returns the bullet marker (including trailing space) that should be
+/// preserved when wrapping list content.
 pub fn extract_bullet_prefix(line: &str) -> &str {
     let trimmed_start = line.trim_start_matches(' ');
     let offset = line.len() - trimmed_start.len();
@@ -103,6 +121,8 @@ pub fn extract_bullet_prefix(line: &str) -> &str {
     &line[..idx]
 }
 
+/// Wrap text to specified width using greedy wrapping algorithm.
+/// Preserves word boundaries and handles Unicode characters correctly.
 pub fn wrap_text(text: &str, width: usize) -> Vec<String> {
     if text.trim().is_empty() {
         return vec![String::new()];
@@ -133,6 +153,9 @@ pub fn wrap_text(text: &str, width: usize) -> Vec<String> {
     lines
 }
 
+/// Calculate the display width of text, handling Unicode characters properly.
+/// Returns the number of columns the text would occupy in a terminal,
+/// accounting for wide characters, combining marks, etc.
 pub fn display_width(s: &str) -> usize {
     UnicodeWidthStr::width(s)
 }

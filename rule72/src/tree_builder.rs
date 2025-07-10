@@ -1,3 +1,9 @@
+//! Document structure building: Group classified lines into semantic chunks.
+//!
+//! This module converts the stream of classified lines into a hierarchical
+//! document structure with headlines, body chunks (paragraphs, lists, code
+//! blocks, etc.), and footers.
+
 use crate::types::{CatLine, Category, ContChunk, Document, ListItem, ListNode};
 
 /// Build hierarchical document structure from classified lines
@@ -214,6 +220,7 @@ mod tests {
     use super::*;
     use crate::classifier::classify_with_context;
     use crate::lexer::lex_lines;
+    use crate::types::Options;
 
     #[test]
     fn test_document_building() {

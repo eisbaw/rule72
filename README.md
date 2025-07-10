@@ -25,13 +25,14 @@ Run `just profile` for detailed benchmarks across the test corpus.
 # Rewrap the current COMMIT_EDITMSG from a Git hook
 cat "$1" | rule72 > "$1.tmp" && mv "$1.tmp" "$1"
 
+# Reflow the HEAD commit message (non-interactive amend)
+git show --format='%B' --no-patch HEAD | rule72 | git commit --amend --file=-
+
+# Reflow HEAD commit message and edit interactively
+git show --format='%B' --no-patch HEAD | rule72 > /tmp/msg && git commit --amend --edit --file=/tmp/msg
+
 # Ad-hoc from shell
 printf '%s\n' "fix: extremely long headline ..." | rule72
-
-# Batch-reformat repository message corpus (Justfile target)
-just reflow-data   # Creates data.out/ mirrored directory
-just compare-data  # Diff original vs reflowed with colordiff/less
-```
 
 CLI flags:
 ```
@@ -40,6 +41,13 @@ CLI flags:
       --no-ansi             strip colour codes before measuring width
       --debug-svg <PATH>    generate SVG visualization of parsing/classification
       --debug-trace         output detailed trace of parsing pipeline
+```
+
+In the repo you can apply `rule72` across all test-vectors and inspect:
+```
+# Batch-reformat repository message corpus (Justfile target)
+just reflow-data   # Updates data.out/ - output reflowed references
+just compare-data  # Diff original vs reflowed with colordiff/less
 ```
 
 ---
@@ -73,28 +81,39 @@ the result to **identical relative paths** under `data.out/`.\
 This serves as an integration regression suite on top of unit tests.
 
 ---
-## Algorithm (bounding rectangles)
+## Algorithm (line classification and chunking)
 
-Computer-vision inspired, but works on text.
+Simple and effective line-by-line processing with contextual refinement.
 
-1. **Line scan → indent matrix**: count leading spaces/tabs per line.
-2. **Marching-squares-style segmentation**: find rectangular regions of equal
-   min-indent – yields a nesting tree (outer → inner).
-3. **Heuristic classification** of each rectangle:
-   * Prose / List / Code / Table / URL.
-4. **Pretty-print** per node type: greedy wrap for prose & list items,
-   verbatim for others, mandatory blank lines enforced.
-5. Reassemble chunks: headline + body blocks + footers.
+1. **Line Classification**: Process each line individually, computing indentation
+   and assigning probability scores to categories (Prose, List, Code, Table, 
+   Comment, Footer, URL, etc.) based on content patterns.
+2. **Context Refinement**: Apply a 4-point FIR-like kernel examining ±2 
+   neighboring lines (excluding center) to adjust classification probabilities
+   based on local context - similar to signal processing techniques.
+3. **Sequential Chunking**: Group consecutive lines of similar types into
+   document chunks (paragraphs, lists, code blocks, tables, comments).
+4. **Pretty-print**: Format each chunk type appropriately - greedy wrap for
+   prose & list items, verbatim for code/tables, enforced spacing.
+5. **Document Assembly**: Combine headline + body chunks + footers with
+   proper semantic structure.
 
-The rectangle tree allows arbitrarily nested lists or code blocks without
-complex parsing.
+The sequential approach handles nested lists and preserves indentation while
+remaining simple and fast.
 
 ### Architecture
 
 ```
 src/
- ├─ main.rs  → arg-parse + stdin/stdout glue
- └─ lib.rs   → parser, classifier, wrapper
+ ├─ main.rs         → CLI argument parsing + stdin/stdout handling
+ ├─ lib.rs          → public API and module orchestration
+ ├─ lexer.rs        → line-by-line classification with probabilities
+ ├─ classifier.rs   → contextual refinement using neighboring lines
+ ├─ tree_builder.rs → sequential chunking into document structure
+ ├─ pretty_printer.rs → content-aware formatting and wrapping
+ ├─ debug.rs        → SVG visualization for explainability
+ ├─ types.rs        → core data structures (CatLine, Document, etc.)
+ └─ utils.rs        → helper functions and debug tracing
 ```
 
 Key crates: `clap`, `regex`, `unicode-segmentation`, `unicode-width`,

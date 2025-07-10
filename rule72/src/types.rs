@@ -1,6 +1,13 @@
+//! Core data structures for commit message parsing and classification.
+//!
+//! This module defines the fundamental types used throughout the rule72 pipeline:
+//! - Configuration options
+//! - Line categories and classification data
+//! - Document structure representation
+
 use std::collections::HashMap;
 
-/// Formatting options
+/// Formatting options for commit message reflow
 #[derive(Debug, Clone)]
 pub struct Options {
     pub width: usize,
@@ -8,6 +15,18 @@ pub struct Options {
     pub strip_ansi: bool,
     pub debug_svg: Option<String>,
     pub debug_trace: bool,
+}
+
+impl Default for Options {
+    fn default() -> Self {
+        Self {
+            width: 72,
+            headline_width: 50,
+            strip_ansi: false,
+            debug_svg: None,
+            debug_trace: false,
+        }
+    }
 }
 
 /// Line categories for classification

@@ -1,6 +1,16 @@
+//! Context-aware classification refinement using neighboring line analysis.
+//!
+//! This module implements the second stage of processing, using a 4-point
+//! FIR-like kernel to examine surrounding context and refine initial
+//! classifications for improved accuracy.
+
 use crate::types::{CatLine, Category};
 
 /// Apply context-aware classification to refine initial probabilities
+///
+/// Uses a 4-point FIR-like kernel examining ±2 neighboring lines to adjust
+/// classification probabilities. Center line is excluded to avoid circular
+/// reinforcement - we use surrounding context as independent evidence.
 pub fn classify_with_context(mut cat_lines: Vec<CatLine>) -> Vec<CatLine> {
     let len = cat_lines.len();
 
@@ -89,6 +99,7 @@ pub fn classify_with_context(mut cat_lines: Vec<CatLine>) -> Vec<CatLine> {
 mod tests {
     use super::*;
     use crate::lexer::lex_lines;
+    use crate::types::Options;
 
     #[test]
     fn test_context_classification() {

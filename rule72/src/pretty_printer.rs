@@ -1,3 +1,9 @@
+//! Pretty printing: Format document chunks with appropriate wrapping and spacing.
+//!
+//! This module handles the final formatting stage, applying content-aware
+//! formatting rules to each chunk type (greedy wrap for prose, verbatim for
+//! code, proper indentation for lists, etc.).
+
 use crate::types::{Category, ContChunk, Document, ListNode, Options};
 use crate::utils::{display_width, extract_bullet_prefix, wrap_text};
 
