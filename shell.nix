@@ -10,6 +10,9 @@ pkgs.mkShell {
     pkgs.clippy
     pkgs.rustfmt
 
+    pkgs.cargo-audit
+    pkgs.cargo-tarpaulin
+
     pkgs.less
     pkgs.colordiff
     pkgs.just
