@@ -115,7 +115,6 @@ mod tests {
         let opts = Options {
             width: 72,
             headline_width: 50,
-            strip_ansi: false,
             debug_svg: None,
             debug_trace: false,
         };

@@ -39,7 +39,6 @@ CLI flags:
 ```
   -w, --width <N>           set body wrap width (default 72)
       --headline-width <N>  advisory headline width (default 50)
-      --no-ansi             strip colour codes before measuring width
       --debug-svg <PATH>    generate SVG visualization of parsing/classification
       --debug-trace         output detailed trace of parsing pipeline
 ```

@@ -12,7 +12,6 @@ use std::collections::HashMap;
 pub struct Options {
     pub width: usize,
     pub headline_width: usize,
-    pub strip_ansi: bool,
     pub debug_svg: Option<String>,
     pub debug_trace: bool,
 }
@@ -22,7 +21,6 @@ impl Default for Options {
         Self {
             width: 72,
             headline_width: 50,
-            strip_ansi: false,
             debug_svg: None,
             debug_trace: false,
         }

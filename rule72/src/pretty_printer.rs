@@ -77,6 +77,7 @@ pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<
 
     for item in &list.items {
         let bullet_prefix = extract_bullet_prefix(&item.bullet_line.text);
+        let bullet_width = display_width(bullet_prefix);
         let text_start = item.bullet_line.text[bullet_prefix.len()..].trim_start();
 
         // Combine bullet line and continuation
@@ -94,17 +95,13 @@ pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<
                 .iter()
                 .any(|l| display_width(&l.text) > opts.width)
         {
-            let wrapped = wrap_text(&full_text, opts.width - bullet_prefix.len());
+            let wrapped = wrap_text(&full_text, opts.width - bullet_width);
             for (i, line) in wrapped.iter().enumerate() {
                 if i == 0 {
                     output.push(format!("{}{}", bullet_prefix, line));
                 } else {
-                    output.push(format!(
-                        "{:width$}{}",
-                        "",
-                        line,
-                        width = bullet_prefix.len()
-                    ));
+                    let padding = " ".repeat(bullet_width);
+                    output.push(format!("{}{}", padding, line));
                 }
             }
         } else {
@@ -154,7 +151,6 @@ mod tests {
         let opts = Options {
             width: 50,
             headline_width: 50,
-            strip_ansi: false,
             debug_svg: None,
             debug_trace: false,
         };
