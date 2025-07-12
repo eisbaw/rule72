@@ -200,37 +200,23 @@ cat commit.txt | rule72 --debug-svg debug.svg
 - Lints: `clippy`, formatting via `rustfmt`
 
 ### Nix Environment (`shell.nix`)
-```nix
-{ pkgs ? import <nixpkgs> {} }:
-pkgs.mkShell {
-  buildInputs = [
-    pkgs.rustc pkgs.cargo pkgs.clippy pkgs.rustfmt
-    pkgs.pkg-config pkgs.openssl # future TLS crates if needed
-    pkgs.musl    # static linking target
-  ];
-  RUSTFLAGS = "-C target-feature=+crt-static";
-}
-```
-Invoke with `nix-shell --run <cmd>` as required by user rules.
+`Nix` provides a reproducible shell with the Rust toolchain and auxiliary
+development tools.  Packages such as `rustc`, `cargo`, `clippy`, `rustfmt` and
+the `just` command are pinned in `shell.nix`.  Invoke `nix-shell --run <cmd>` to
+execute any of the tasks below or plain Cargo commands.
 
 ### Task Automation (`Justfile`)
-```just
-# Build release binary (static)
-build:
-  nix-shell --run "cargo build --release --target x86_64-unknown-linux-musl"
+Routine commands are defined in a `Justfile` and executed via `just`:
 
-# Run unit + integration tests
-test:
-  nix-shell --run "cargo test --all"
+- **build** – compile the release binary
+- **test** – run unit and integration tests
+- **fmt** – format the source with `rustfmt`
+- **lint** – run `clippy` with warnings as errors
+- **reflow-data**/`compare-data` – verify message corpus formatting
+- **check-data-changes** – ensure regenerated corpus is clean
+- **nix-test** – confirm the Nix derivation works
 
-# Format source tree
-fmt:
-  nix-shell --run "cargo fmt --all"
-
-# Static analysis
-lint:
-  nix-shell --run "cargo clippy -- -D warnings"
-```
+Run `just --list` to see the full set of tasks.
 
 ### Directory Layout
 ```
@@ -244,10 +230,18 @@ rule72/
 ```
 
 ### CI Consideration
-- GitHub Actions job uses `nix` to enter shell and run `just build && just test`.
-- Produces `rule72` artifact uploaded as release.
+GitHub Actions defines multiple jobs:
+
+- **build** – compile the release binary via Nix
+- **lint** – run `clippy` with warnings as errors
+- **test** – execute unit tests
+- **reflow-data** and **compare-data** – verify formatting on the message corpus
+- **check-data-changes** – fail if reflowed output differs
+- **nix-test** – ensure the Nix derivation builds and the binary runs
+
+Artifacts include the compiled `rule72` binary.
 
 ---
 Additions above define how to build, test, and lint the Rust implementation via Nix and Just.
 
-*Author: TBD • Last updated: <!-- YYYY-MM-DD -->* 
+*Author: Mark Ruvald Pedersen • Last updated: 2025-07-10*
