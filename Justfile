@@ -8,8 +8,18 @@ test:
 fmt:
   (cd rule72 && cargo fmt --all)
 
-lint:
+lint: fmt-check
   (cd rule72 && cargo clippy -- -D warnings)
+
+fmt-check:
+  (cd rule72 && cargo fmt --all -- --check)
+
+audit:
+  (cd rule72 && cargo audit)
+
+
+coverage:
+  (cd rule72 && cargo tarpaulin --out Html)
 
 # Reflow all commit message .txt files under data/ into data.out/
 # Preserves directory structure for easy comparison.
