@@ -32,12 +32,6 @@ fn main() -> Result<()> {
                 .default_value("50"),
         )
         .arg(
-            Arg::new("no-ansi")
-                .long("no-ansi")
-                .help("Strip ANSI color codes before measuring width")
-                .action(clap::ArgAction::SetTrue),
-        )
-        .arg(
             Arg::new("debug-svg")
                 .long("debug-svg")
                 .value_name("PATH")
@@ -56,14 +50,12 @@ fn main() -> Result<()> {
         .get_one::<String>("headline-width")
         .unwrap()
         .parse()?;
-    let strip_ansi = matches.get_flag("no-ansi");
     let debug_svg = matches.get_one::<String>("debug-svg").cloned();
     let debug_trace = matches.get_flag("debug-trace");
 
     let opts = Options {
         width,
         headline_width,
-        strip_ansi,
         debug_svg,
         debug_trace,
     };

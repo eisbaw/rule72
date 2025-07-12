@@ -53,7 +53,6 @@ Provide a **stream-oriented** command-line filter (`rule72`) that reads an unfor
    - Flags:
      * `-w`, `--width` <N>: set wrap width (default 72)
      * `--headline-width` <N>: advisory width for headline (default 50; no hard split)
-     * `--no-ansi`: strip ANSI color codes before measuring width
      * `--debug-svg` <path>: output SVG visualization of parsing/classification
 8. **Exit Codes**
    - `0` success; formatted text on stdout

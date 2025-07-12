@@ -75,7 +75,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Command-line interface with customizable options:
   - `--width`: Set body wrap width
   - `--headline-width`: Advisory headline width
-  - `--no-ansi`: Strip ANSI color codes
 - Nix package definition for easy installation
 - Basic test suite and project structure
 - MIT/Apache-2.0 dual licensing

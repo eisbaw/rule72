@@ -19,7 +19,7 @@ macro_rules! debug_trace {
 pub(crate) use debug_trace;
 
 /// Count leading whitespace characters (spaces and tabs) in a line.
-/// Tabs are counted as single characters for simplicity.
+/// Tabs are treated as four spaces when measuring indentation.
 pub fn count_indent(line: &str) -> usize {
     line.chars()
         .take_while(|&c| c == ' ' || c == '\t')
