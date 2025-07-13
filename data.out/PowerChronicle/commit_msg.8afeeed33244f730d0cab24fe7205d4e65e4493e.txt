@@ -20,7 +20,7 @@ Major architectural improvements:
 • Clean separation of concerns with proper fallback mechanisms
 • Security enhanced through SecureSubprocess for all system calls
 • Mock implementations enable comprehensive testing without hardware
-    dependencies
+  dependencies
 • Real implementations support both X11 and Wayland environments
 
 🤖 Generated with [Claude Code](https://claude.ai/code)

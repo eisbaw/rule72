@@ -11,7 +11,7 @@ software patterns.
 - Type-safe configuration with dataclasses and comprehensive validation
 
 🔄 **Circuit Breaker Pattern** (hal/circuit_breaker.py,
-     hal/resilient_hal.py)
+   hal/resilient_hal.py)
 - Resilience against cascading HAL failures
 - Three-state circuit breaker (CLOSED → OPEN → HALF_OPEN)
 - Automatic failure detection and self-healing recovery
@@ -25,7 +25,7 @@ software patterns.
 - RESTful API on configurable port for integration
 
 💉 **Dependency Injection Architecture**
-     (src/improved_power_event_monitor.py)
+   (src/improved_power_event_monitor.py)
 - Injectable HAL dependencies for better testability
 - Runtime HAL provider selection via configuration
 - Component isolation for independent testing
