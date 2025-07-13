@@ -254,4 +254,157 @@ mod tests {
             .any(|chunk| matches!(chunk, ContChunk::List(_)));
         assert!(has_list, "Document should contain a list chunk");
     }
+
+    #[test]
+    fn test_document_with_footers() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "Body paragraph",
+            "",
+            "Signed-off-by: Author <email>",
+            "Co-authored-by: Contributor <contrib@example.com>",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+
+        assert!(document.headline.is_some());
+        assert_eq!(document.footers.len(), 2);
+        assert!(document.footers[0].text.contains("Signed-off-by"));
+        assert!(document.footers[1].text.contains("Co-authored-by"));
+    }
+
+    #[test]
+    fn test_document_with_code_blocks() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "Example code:",
+            "    function test() {",
+            "        return true;",
+            "    }",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+
+        assert!(document.headline.is_some());
+
+        // Should have code chunk
+        let has_code = document
+            .body_chunks
+            .iter()
+            .any(|chunk| matches!(chunk, ContChunk::Code(_)));
+        assert!(has_code, "Document should contain a code chunk");
+    }
+
+    #[test]
+    fn test_document_with_tables() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "Data table:",
+            "| Name | Value |",
+            "| foo  | bar   |",
+            "| baz  | qux   |",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+
+        assert!(document.headline.is_some());
+
+        // Should have table chunk
+        let has_table = document
+            .body_chunks
+            .iter()
+            .any(|chunk| matches!(chunk, ContChunk::Table(_)));
+        assert!(has_table, "Document should contain a table chunk");
+    }
+
+    #[test]
+    fn test_document_with_comments() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "# This is a comment",
+            "// Another comment",
+            "Regular text",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+
+        assert!(document.headline.is_some());
+
+        // Should have comment chunk
+        let has_comment = document
+            .body_chunks
+            .iter()
+            .any(|chunk| matches!(chunk, ContChunk::Comment(_)));
+        assert!(has_comment, "Document should contain a comment chunk");
+    }
+
+    #[test]
+    fn test_document_empty_body() {
+        let lines = vec!["Subject line"];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+
+        assert!(document.headline.is_some());
+        assert!(document.body_chunks.is_empty());
+        assert!(document.footers.is_empty());
+    }
+
+    #[test]
+    fn test_document_nested_lists() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "- First item",
+            "  - Nested item 1",
+            "  - Nested item 2",
+            "- Second item",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+
+        assert!(document.headline.is_some());
+
+        // Should have list chunk
+        let has_list = document
+            .body_chunks
+            .iter()
+            .any(|chunk| matches!(chunk, ContChunk::List(_)));
+        assert!(has_list, "Document should contain a list chunk");
+    }
+
+    #[test]
+    fn test_document_only_footers() {
+        let lines = vec!["Subject line", "", "Signed-off-by: Author <email>"];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+
+        assert!(document.headline.is_some());
+        assert_eq!(document.footers.len(), 1);
+        assert!(document.footers[0].text.contains("Signed-off-by"));
+    }
 }
