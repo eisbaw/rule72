@@ -112,4 +112,200 @@ mod tests {
         assert_eq!(cat_lines[7].final_category, Category::Table);
         assert_eq!(cat_lines[8].final_category, Category::Footer);
     }
+
+    #[test]
+    fn test_lexer_urls() {
+        let lines = vec![
+            "Subject line",
+            "Check out https://example.com",
+            "See http://github.com/user/repo",
+            "Visit ftp://files.example.org",
+        ];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        // First line is subject, others should be URL
+        assert_eq!(cat_lines[0].final_category, Category::ProseGeneral);
+        assert_eq!(cat_lines[1].final_category, Category::URL);
+        assert_eq!(cat_lines[2].final_category, Category::URL);
+        assert_eq!(cat_lines[3].final_category, Category::URL);
+    }
+
+    #[test]
+    fn test_lexer_comments() {
+        let lines = vec![
+            "Subject line",
+            "# Hash comment",
+            "// Double slash comment",
+            "/* Block comment start",
+        ];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines[0].final_category, Category::ProseGeneral);
+        assert_eq!(cat_lines[1].final_category, Category::Comment);
+        assert_eq!(cat_lines[2].final_category, Category::Comment);
+        // Block comment should be prose or code, not comment (our pattern is specific)
+        assert_ne!(cat_lines[3].final_category, Category::Comment);
+    }
+
+    #[test]
+    fn test_lexer_code_detection() {
+        let lines = vec![
+            "Subject line",
+            "        heavily indented",
+            "    function() {",
+            "lots!@#$%^&*()of{}special[]chars",
+            "normal text with some punctuation.",
+        ];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines[0].final_category, Category::ProseGeneral);
+        assert_eq!(cat_lines[1].final_category, Category::Code); // 8 spaces
+        assert_eq!(cat_lines[2].final_category, Category::Code); // 4 spaces
+        assert_eq!(cat_lines[3].final_category, Category::Code); // high special char ratio
+        assert_eq!(cat_lines[4].final_category, Category::ProseGeneral); // normal text
+    }
+
+    #[test]
+    fn test_lexer_list_items() {
+        let lines = vec![
+            "Subject line",
+            "* Bullet item",
+            "- Dash item",
+            "  * Indented bullet",
+            "1. Numbered item",
+            "2) Paren numbered",
+            "10. Double digit",
+            "🔥 Emoji bullet",
+            "✅ Check emoji",
+        ];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines[0].final_category, Category::ProseGeneral);
+        for i in 1..cat_lines.len() {
+            assert_eq!(cat_lines[i].final_category, Category::List);
+        }
+    }
+
+    #[test]
+    fn test_lexer_tables() {
+        let lines = vec![
+            "Subject line",
+            "| Name | Value |",
+            "| foo  | bar   |",
+            "|left|right|",
+            "| with | spaces |",
+        ];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines[0].final_category, Category::ProseGeneral);
+        for i in 1..cat_lines.len() {
+            assert_eq!(cat_lines[i].final_category, Category::Table);
+        }
+    }
+
+    #[test]
+    fn test_lexer_footers() {
+        let lines = vec![
+            "Subject line",
+            "Signed-off-by: Author <email>",
+            "Co-authored-by: Contributor <contrib@example.com>",
+            "Reviewed-by: Reviewer <reviewer@example.com>",
+            "Fixes: #123",
+            "Closes: #456",
+            "Resolves: #789",
+        ];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines[0].final_category, Category::ProseGeneral);
+        for i in 1..cat_lines.len() {
+            assert_eq!(cat_lines[i].final_category, Category::Footer);
+        }
+    }
+
+    #[test]
+    fn test_lexer_empty_lines() {
+        let lines = vec!["Subject line", "", "   ", "\t", "Body text"];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines[0].final_category, Category::ProseGeneral);
+        assert_eq!(cat_lines[1].final_category, Category::Empty);
+        assert_eq!(cat_lines[2].final_category, Category::Empty);
+        assert_eq!(cat_lines[3].final_category, Category::Empty);
+        assert_eq!(cat_lines[4].final_category, Category::ProseGeneral);
+    }
+
+    #[test]
+    fn test_lexer_indentation_tracking() {
+        let lines = vec![
+            "Subject line",
+            "  two spaces",
+            "    four spaces",
+            "\tone tab",
+            "\t\ttwo tabs",
+            "  \tmixed",
+        ];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines[0].indent, 0);
+        assert_eq!(cat_lines[1].indent, 2);
+        assert_eq!(cat_lines[2].indent, 4);
+        assert_eq!(cat_lines[3].indent, 4); // tab = 4 spaces
+        assert_eq!(cat_lines[4].indent, 8); // 2 tabs = 8 spaces
+        assert_eq!(cat_lines[5].indent, 6); // 2 spaces + 1 tab = 6
+    }
+
+    #[test]
+    fn test_lexer_line_numbers() {
+        let lines = vec!["First line", "Second line", "Third line"];
+
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines[0].line_number, 0);
+        assert_eq!(cat_lines[1].line_number, 1);
+        assert_eq!(cat_lines[2].line_number, 2);
+    }
+
+    #[test]
+    fn test_lexer_empty_input() {
+        let lines: Vec<&str> = vec![];
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert!(cat_lines.is_empty());
+    }
+
+    #[test]
+    fn test_lexer_probabilities() {
+        let lines = vec!["Subject line"];
+        let opts = Options::default();
+        let cat_lines = lex_lines(&lines, &opts);
+
+        assert_eq!(cat_lines.len(), 1);
+        let probabilities = &cat_lines[0].probabilities;
+
+        // Should have probabilities for the classified category
+        assert!(probabilities.contains_key(&Category::ProseGeneral));
+        assert!(probabilities.get(&Category::ProseGeneral).unwrap() > &0.0);
+
+        // Sum of probabilities should be reasonable (not necessarily 1.0)
+        let total: f32 = probabilities.values().sum();
+        assert!(total > 0.0);
+    }
 }

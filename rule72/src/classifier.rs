@@ -131,4 +131,63 @@ mod tests {
         assert_eq!(classified[3].final_category, Category::List);
         assert_eq!(classified[4].final_category, Category::List);
     }
+
+    #[test]
+    fn test_context_refinement_introduction() {
+        let lines = vec!["Subject line", "", "Changes:", "- item one", "- item two"];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+
+        // Line ending with colon before list should be introduction
+        assert!(matches!(
+            classified[2].final_category,
+            Category::ProseIntroduction | Category::ProseGeneral
+        ));
+    }
+
+    #[test]
+    fn test_context_preserves_original_categories() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "    code block",
+            "# Comment line",
+            "| table | row |",
+            "Signed-off-by: Author <email>",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+
+        // Strong classifications should be preserved
+        assert_eq!(classified[2].final_category, Category::Code);
+        assert_eq!(classified[3].final_category, Category::Comment);
+        assert_eq!(classified[4].final_category, Category::Table);
+        assert_eq!(classified[5].final_category, Category::Footer);
+    }
+
+    #[test]
+    fn test_context_empty_input() {
+        let lines: Vec<&str> = vec![];
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+
+        assert!(classified.is_empty());
+    }
+
+    #[test]
+    fn test_context_single_line() {
+        let lines = vec!["Single line"];
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+
+        assert_eq!(classified.len(), 1);
+        // Should remain as ProseGeneral (first line classification)
+        assert_eq!(classified[0].final_category, Category::ProseGeneral);
+    }
 }

@@ -135,7 +135,7 @@ pub fn wrap_text(text: &str, width: usize) -> Vec<String> {
 
     for word in text.split_whitespace() {
         let word_width = display_width(word);
-        
+
         // Handle words longer than width limit
         if word_width > width {
             // If current line has content, finish it first
@@ -196,7 +196,10 @@ mod tests {
     #[test]
     fn test_wrap_text_long_word() {
         let result = wrap_text("short verylongwordthatexceedslimit more", 10);
-        assert_eq!(result, vec!["short", "verylongwordthatexceedslimit", "more"]);
+        assert_eq!(
+            result,
+            vec!["short", "verylongwordthatexceedslimit", "more"]
+        );
     }
 
     #[test]
@@ -209,5 +212,106 @@ mod tests {
     fn test_wrap_text_unicode() {
         let result = wrap_text("🔥 hello 世界", 10);
         assert_eq!(result, vec!["🔥 hello", "世界"]);
+    }
+
+    #[test]
+    fn test_count_indent() {
+        assert_eq!(count_indent("hello"), 0);
+        assert_eq!(count_indent("  hello"), 2);
+        assert_eq!(count_indent("    hello"), 4);
+        assert_eq!(count_indent("\thello"), 4);
+        assert_eq!(count_indent("\t\thello"), 8);
+        assert_eq!(count_indent("  \thello"), 6);
+        assert_eq!(count_indent(""), 0);
+        assert_eq!(count_indent("   "), 3);
+    }
+
+    #[test]
+    fn test_count_special_chars() {
+        assert_eq!(count_special_chars("hello world"), 0); // space is whitespace, not special
+        assert_eq!(count_special_chars("hello-world"), 1); // hyphen
+        assert_eq!(count_special_chars("foo(bar)"), 2); // parentheses
+        assert_eq!(count_special_chars("abc123"), 0); // alphanumeric only
+        assert_eq!(count_special_chars("!@#$%^&*()"), 10); // all special
+        assert_eq!(count_special_chars(""), 0); // empty
+        assert_eq!(count_special_chars("   "), 0); // whitespace only
+    }
+
+    #[test]
+    fn test_is_footer_line() {
+        assert!(is_footer_line("Signed-off-by: John Doe <john@example.com>"));
+        assert!(is_footer_line(
+            "Co-authored-by: Jane Smith <jane@example.com>"
+        ));
+        assert!(is_footer_line("Reviewed-by: Bob Wilson"));
+        assert!(is_footer_line("Acked-by: Alice Brown"));
+        assert!(is_footer_line("Tested-by: Charlie Davis"));
+        assert!(is_footer_line("Fixes: #123"));
+        assert!(is_footer_line("Closes: #456"));
+        assert!(is_footer_line("Resolves: #789"));
+
+        // Should not match non-footer lines
+        assert!(!is_footer_line("This is a regular line"));
+        assert!(!is_footer_line("EN: something broke")); // not a git footer
+        assert!(!is_footer_line("Random: text"));
+        assert!(!is_footer_line(""));
+        assert!(!is_footer_line("Subject: this is not a footer"));
+    }
+
+    #[test]
+    fn test_is_list_item() {
+        // Bullet lists
+        assert!(is_list_item("* First item"));
+        assert!(is_list_item("- Second item"));
+        assert!(is_list_item("  * Indented item"));
+        assert!(is_list_item("    - More indented"));
+
+        // Numbered lists
+        assert!(is_list_item("1. First numbered"));
+        assert!(is_list_item("2) Second numbered"));
+        assert!(is_list_item("10. Double digit"));
+        assert!(is_list_item("  3. Indented numbered"));
+
+        // Emoji bullets
+        assert!(is_list_item("🔥 Fire bullet"));
+        assert!(is_list_item("✅ Check bullet"));
+        assert!(is_list_item("  🚀 Indented emoji"));
+
+        // Should not match non-list items
+        assert!(!is_list_item("Regular text"));
+        assert!(!is_list_item("*no space after asterisk"));
+        assert!(!is_list_item("-no space after dash"));
+        assert!(!is_list_item("1.no space after number"));
+        assert!(!is_list_item(""));
+        assert!(!is_list_item("   "));
+    }
+
+    #[test]
+    fn test_extract_bullet_prefix() {
+        assert_eq!(extract_bullet_prefix("* First item"), "* ");
+        assert_eq!(extract_bullet_prefix("- Second item"), "- ");
+        assert_eq!(extract_bullet_prefix("  * Indented item"), "  * ");
+        assert_eq!(extract_bullet_prefix("    - More indented"), "    - ");
+        assert_eq!(extract_bullet_prefix("1. First numbered"), "1. ");
+        assert_eq!(extract_bullet_prefix("2) Second numbered"), "2) ");
+        assert_eq!(extract_bullet_prefix("10. Double digit"), "10. ");
+        assert_eq!(extract_bullet_prefix("  3. Indented numbered"), "  3. ");
+        assert_eq!(extract_bullet_prefix("🔥 Fire bullet"), "🔥 ");
+        assert_eq!(extract_bullet_prefix("✅ Check bullet"), "✅ ");
+        assert_eq!(extract_bullet_prefix("  🚀 Indented emoji"), "  🚀 ");
+
+        // Edge cases
+        assert_eq!(extract_bullet_prefix("*  Multiple spaces"), "*  ");
+        assert_eq!(extract_bullet_prefix("1.   Extra spaces"), "1.   ");
+    }
+
+    #[test]
+    fn test_display_width() {
+        assert_eq!(display_width("hello"), 5);
+        assert_eq!(display_width("世界"), 4); // Wide characters
+        assert_eq!(display_width("🔥"), 2); // Emoji
+        assert_eq!(display_width(""), 0);
+        assert_eq!(display_width("a🔥b"), 4); // Mixed
+        assert_eq!(display_width("héllo"), 5); // Accented characters
     }
 }

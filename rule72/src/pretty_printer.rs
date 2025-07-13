@@ -163,4 +163,202 @@ mod tests {
         assert!(output.contains("Short subject"));
         assert!(output.contains("- A very long list item"));
     }
+
+    #[test]
+    fn test_pretty_print_code_blocks() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "Example:",
+            "    function test() {",
+            "        return true;",
+            "    }",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+        let output = pretty_print(&document, &opts);
+
+        // Code should be preserved as-is
+        assert!(output.contains("    function test() {"));
+        assert!(output.contains("        return true;"));
+        assert!(output.contains("    }"));
+    }
+
+    #[test]
+    fn test_pretty_print_tables() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "Data:",
+            "| Name | Value |",
+            "| foo  | bar   |",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+        let output = pretty_print(&document, &opts);
+
+        // Tables should be preserved as-is
+        assert!(output.contains("| Name | Value |"));
+        assert!(output.contains("| foo  | bar   |"));
+    }
+
+    #[test]
+    fn test_pretty_print_comments() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "# This is a comment",
+            "// Another comment",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+        let output = pretty_print(&document, &opts);
+
+        // Comments should be preserved as-is
+        assert!(output.contains("# This is a comment"));
+        assert!(output.contains("// Another comment"));
+    }
+
+    #[test]
+    fn test_pretty_print_footers() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "Body text",
+            "",
+            "Signed-off-by: Author <email>",
+            "Co-authored-by: Contributor <contrib@example.com>",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+        let output = pretty_print(&document, &opts);
+
+        // Footers should be separated by blank line
+        assert!(output.contains("Signed-off-by: Author <email>"));
+        assert!(output.contains("Co-authored-by: Contributor <contrib@example.com>"));
+
+        // Should have blank line before footers
+        let lines: Vec<&str> = output.trim().split('\n').collect();
+        let signed_off_idx = lines
+            .iter()
+            .position(|&l| l.contains("Signed-off-by"))
+            .unwrap();
+        assert!(signed_off_idx > 0);
+        assert_eq!(lines[signed_off_idx - 1], "");
+    }
+
+    #[test]
+    fn test_pretty_print_empty_lines() {
+        let lines = vec!["Subject line", "", "", "Body text"];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+        let output = pretty_print(&document, &opts);
+
+        // Empty lines should be preserved
+        assert!(output.contains("Subject line"));
+        assert!(output.contains("Body text"));
+
+        // Should have empty lines in output
+        let output_lines: Vec<&str> = output.trim().split('\n').collect();
+        assert!(output_lines.iter().any(|&l| l.is_empty()));
+    }
+
+    #[test]
+    fn test_pretty_print_paragraph_wrapping() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "This is a very long paragraph that should definitely be wrapped when it exceeds the specified width limit for the document formatting",
+        ];
+
+        let opts = Options {
+            width: 50,
+            headline_width: 50,
+            debug_svg: None,
+            debug_trace: false,
+        };
+
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+        let output = pretty_print(&document, &opts);
+
+        // Paragraph should be wrapped
+        let output_lines: Vec<&str> = output.trim().split('\n').collect();
+        let body_lines: Vec<&str> = output_lines
+            .iter()
+            .filter(|&&l| !l.is_empty() && l != "Subject line")
+            .cloned()
+            .collect();
+
+        // Should have multiple lines from wrapping
+        assert!(body_lines.len() > 1);
+
+        // Each line should be within width limit
+        for line in body_lines {
+            assert!(display_width(line) <= 50);
+        }
+    }
+
+    #[test]
+    fn test_pretty_print_mixed_content() {
+        let lines = vec![
+            "Subject line",
+            "",
+            "Introduction paragraph",
+            "",
+            "- List item one",
+            "- List item two",
+            "",
+            "    code block",
+            "",
+            "Final paragraph",
+            "",
+            "Signed-off-by: Author <email>",
+        ];
+
+        let opts = Options::default();
+        let lexed = lex_lines(&lines, &opts);
+        let classified = classify_with_context(lexed);
+        let document = build_document(classified);
+        let output = pretty_print(&document, &opts);
+
+        // All content types should be present
+        assert!(output.contains("Subject line"));
+        assert!(output.contains("Introduction paragraph"));
+        assert!(output.contains("- List item one"));
+        assert!(output.contains("    code block"));
+        assert!(output.contains("Final paragraph"));
+        assert!(output.contains("Signed-off-by: Author <email>"));
+    }
+
+    #[test]
+    fn test_pretty_print_empty_document() {
+        let document = Document {
+            headline: None,
+            body_chunks: Vec::new(),
+            footers: Vec::new(),
+        };
+
+        let opts = Options::default();
+        let output = pretty_print(&document, &opts);
+
+        // Should just be a newline
+        assert_eq!(output, "\n");
+    }
 }
