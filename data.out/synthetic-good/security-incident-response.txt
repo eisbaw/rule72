@@ -170,4 +170,4 @@ Team:
 Security: @security-team
 Infrastructure: @devops-team
 Development: @dev-leads
-Compliance: @compliance-team 
+Compliance: @compliance-team

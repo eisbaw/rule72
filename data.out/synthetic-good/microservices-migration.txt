@@ -141,4 +141,4 @@ Team:
 Architecture: @senior-architects
 Implementation: @platform-team
 Review: @tech-leads
-Operations: @sre-team 
+Operations: @sre-team

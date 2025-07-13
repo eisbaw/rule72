@@ -23,4 +23,4 @@ Validation:
 - Validated all examples
 - Updated postman collection
 
-Location: docs/api/v2/* 
+Location: docs/api/v2/*

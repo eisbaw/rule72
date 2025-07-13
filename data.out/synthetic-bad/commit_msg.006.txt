@@ -13,4 +13,4 @@ Error log: [ERROR] 2024-01-15T12:34:56.789Z: Cannot read property
 [ERROR] 2024-01-15T12:34:58.456Z: And another one
 [ERROR] 2024-01-15T12:34:59.789Z: One more for good measure
 
-fixed it by adding more try/catch 👍 
+fixed it by adding more try/catch 👍

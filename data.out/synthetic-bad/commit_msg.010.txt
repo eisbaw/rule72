@@ -14,19 +14,19 @@ SECRET_TOKEN=super_secret_token_that_should_not_be_here
 
 Random notes:
   -asked chatgpt to fix it
-  - copied some code from reddit   
+  - copied some code from reddit
   -  stackoverflow said it would work
-  - changed stuff until it worked  
-- didn't test anything  
+  - changed stuff until it worked
+- didn't test anything
  - pushed directly to main
-- crossing fingers   
+- crossing fingers
 
 TODO: Clean this up before code review
-NOTE: Nobody reads commit messages anyway 
-FIXME: Everything 
+NOTE: Nobody reads commit messages anyway
+FIXME: Everything
 HACK: Life
 
 git commit -m "fix stuff" --no-verify
 git push -f origin main
 
-¯\_(ツ)_/¯ YOLO 🎉 
+¯\_(ツ)_/¯ YOLO 🎉

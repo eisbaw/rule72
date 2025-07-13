@@ -23,4 +23,4 @@ Monitoring:
 - Memory usage alerts
 - Eviction rate monitoring
 
-Migration: Automatic with zero downtime 
+Migration: Automatic with zero downtime

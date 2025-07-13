@@ -19,4 +19,4 @@ Test infrastructure:
 Performance:
 - Test suite runtime: 8.5min
 - Resource usage: 2GB RAM peak
-- CI integration: Configured 
+- CI integration: Configured
