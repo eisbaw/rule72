@@ -9,7 +9,7 @@ Components:
 • SVG chart generation using matplotlib
 • Real-time interactive dashboard with live updates
 • Command line tools (power-visualize, power-dashboard, power-analyze,
-    power-report)
+  power-report)
 • Pattern analysis and statistical reporting
 • Cross-stream correlation and traceability
 

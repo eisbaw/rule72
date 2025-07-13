@@ -123,6 +123,7 @@ pub fn extract_bullet_prefix(line: &str) -> &str {
 
 /// Wrap text to specified width using greedy wrapping algorithm.
 /// Preserves word boundaries and handles Unicode characters correctly.
+/// Words longer than the width limit are placed on their own line.
 pub fn wrap_text(text: &str, width: usize) -> Vec<String> {
     if text.trim().is_empty() {
         return vec![String::new()];
@@ -130,19 +131,35 @@ pub fn wrap_text(text: &str, width: usize) -> Vec<String> {
 
     let mut lines = Vec::new();
     let mut current_line = String::new();
+    let mut current_width = 0;
 
     for word in text.split_whitespace() {
         let word_width = display_width(word);
-        let current_width = display_width(&current_line);
+        
+        // Handle words longer than width limit
+        if word_width > width {
+            // If current line has content, finish it first
+            if !current_line.is_empty() {
+                lines.push(current_line);
+                current_line = String::new();
+                current_width = 0;
+            }
+            // Add the long word as its own line
+            lines.push(word.to_string());
+            continue;
+        }
 
         if current_line.is_empty() {
-            current_line = word.to_string();
+            current_line.push_str(word);
+            current_width = word_width;
         } else if current_width + 1 + word_width <= width {
             current_line.push(' ');
             current_line.push_str(word);
+            current_width += 1 + word_width;
         } else {
             lines.push(current_line);
             current_line = word.to_string();
+            current_width = word_width;
         }
     }
 
@@ -158,4 +175,39 @@ pub fn wrap_text(text: &str, width: usize) -> Vec<String> {
 /// accounting for wide characters, combining marks, etc.
 pub fn display_width(s: &str) -> usize {
     UnicodeWidthStr::width(s)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_wrap_text_basic() {
+        let result = wrap_text("hello world", 15);
+        assert_eq!(result, vec!["hello world"]);
+    }
+
+    #[test]
+    fn test_wrap_text_wrapping() {
+        let result = wrap_text("hello world this is a test", 10);
+        assert_eq!(result, vec!["hello", "world this", "is a test"]);
+    }
+
+    #[test]
+    fn test_wrap_text_long_word() {
+        let result = wrap_text("short verylongwordthatexceedslimit more", 10);
+        assert_eq!(result, vec!["short", "verylongwordthatexceedslimit", "more"]);
+    }
+
+    #[test]
+    fn test_wrap_text_empty() {
+        let result = wrap_text("", 10);
+        assert_eq!(result, vec![""]);
+    }
+
+    #[test]
+    fn test_wrap_text_unicode() {
+        let result = wrap_text("🔥 hello 世界", 10);
+        assert_eq!(result, vec!["🔥 hello", "世界"]);
+    }
 }
