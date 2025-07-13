@@ -16,4 +16,4 @@ Testing:
 - Load tested with 10k req/s throughput
 
 Migration required: Yes
-Deployment: Zero-downtime rolling update 
+Deployment: Zero-downtime rolling update

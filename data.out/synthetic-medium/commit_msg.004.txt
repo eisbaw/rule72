@@ -4,4 +4,4 @@ split UserService into smaller classes
 - UserAuth
 - UserProfile
 - UserPreferences
-code is more organized now but needs tests 
+code is more organized now but needs tests

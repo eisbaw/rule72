@@ -87,4 +87,4 @@ Related Issues:
 
 Team: @alice @bob @charlie
 Security Review: @security-team
-Architecture Review: @arch-board 
+Architecture Review: @arch-board

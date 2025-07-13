@@ -15,4 +15,4 @@ function doStuff() {
 }
 ```
 
-also changed some other files but whatever 
+also changed some other files but whatever

@@ -2,4 +2,4 @@ fix: database connection timeout issue
 
 Fixed the timeout problem when connecting to MongoDB
 Changed connection timeout from 5s to 15s
-Also added some logs to track connection status 
+Also added some logs to track connection status

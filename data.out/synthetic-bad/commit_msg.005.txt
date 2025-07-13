@@ -14,4 +14,4 @@ JP: なにかが壊れた
 > it works on my machine
 > ¯\_(ツ)_/¯
 
-#yolo #coding #whoNeedsTests #production #friday 
+#yolo #coding #whoNeedsTests #production #friday

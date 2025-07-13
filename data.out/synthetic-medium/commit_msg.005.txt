@@ -5,4 +5,4 @@ wrote tests for:
 - payment gateway integration
 - error handling scenarios
 coverage increased to 75%
-some edge cases still pending 
+some edge cases still pending

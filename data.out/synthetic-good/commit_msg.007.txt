@@ -18,4 +18,4 @@ Breaking changes:
 Migration:
 - Update guide: MIGRATION.md
 - Automated tests added: 45 cases
-- Rollback procedure: docs/rollback.md 
+- Rollback procedure: docs/rollback.md

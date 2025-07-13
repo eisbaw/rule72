@@ -16,4 +16,4 @@ CREATE TABLE users (
 INTERVAL '1000 YEARS';
 
 -- backup just in case
--- jk no backup 
+-- jk no backup

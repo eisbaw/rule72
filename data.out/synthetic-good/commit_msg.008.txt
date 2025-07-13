@@ -22,4 +22,4 @@ Storage impact:
 - Storage rate: ~2GB/day
 - Sampling rate: 10%
 
-Configuration: terraform/monitoring/* 
+Configuration: terraform/monitoring/*

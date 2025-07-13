@@ -21,4 +21,4 @@ Cost impact:
 - Storage costs: -30%
 - Build quota: Unchanged
 
-Migration: Automatic, no action required 
+Migration: Automatic, no action required
