@@ -94,3 +94,7 @@ debug txtfile: build
   rule72/target/release/rule72 --debug-trace --debug-svg {{txtfile}}.svg < {{txtfile}} > {{txtfile}}.tmp
   -colordiff -U10 {{txtfile}} {{txtfile}}.tmp
   @feh {{txtfile}}.svg || true
+
+# Check version consistency across documentation and build files
+check-version:
+  python3 scripts/check_version.py
