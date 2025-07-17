@@ -24,6 +24,21 @@ fn test_width_arg() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
+fn test_division_by_zero_cli() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin("rule72")?;
+    let mut child = cmd.stdin(Stdio::piped()).stdout(Stdio::piped()).spawn()?;
+
+    let child_stdin = child.stdin.as_mut().unwrap();
+    child_stdin.write_all(b"Subject\n\n \n")?;
+
+    let output = child.wait_with_output()?;
+    assert!(output.status.success());
+
+    Ok(())
+}
+
+
+#[test]
 fn test_headline_width_arg() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("rule72")?;
     let mut child = cmd
