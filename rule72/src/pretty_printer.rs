@@ -13,7 +13,7 @@ pub fn pretty_print(doc: &Document, opts: &Options) -> String {
 
     // Print headline as-is (no wrapping)
     if let Some(headline) = &doc.headline {
-        output.push(headline.text.clone());
+        output.push(headline.text.trim_end().to_string());
     }
 
     // Print body chunks
@@ -21,7 +21,7 @@ pub fn pretty_print(doc: &Document, opts: &Options) -> String {
         match chunk {
             ContChunk::Code(lines) | ContChunk::Comment(lines) | ContChunk::Table(lines) => {
                 for line in lines {
-                    output.push(line.text.clone());
+                    output.push(line.text.trim_end().to_string());
                 }
             }
             ContChunk::Paragraph(lines) => {
@@ -40,7 +40,7 @@ pub fn pretty_print(doc: &Document, opts: &Options) -> String {
                         output.extend(wrapped);
                     } else {
                         for line in lines {
-                            output.push(line.text.clone());
+                            output.push(line.text.trim_end().to_string());
                         }
                     }
                 }
@@ -55,7 +55,7 @@ pub fn pretty_print(doc: &Document, opts: &Options) -> String {
     if !doc.footers.is_empty() {
         output.push(String::new()); // Blank line before footers
         for footer in &doc.footers {
-            output.push(footer.text.clone());
+            output.push(footer.text.trim_end().to_string());
         }
     }
 
@@ -71,7 +71,7 @@ pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<
         if intro_line.final_category == Category::Empty {
             output.push(String::new());
         } else {
-            output.push(intro_line.text.clone());
+            output.push(intro_line.text.trim_end().to_string());
         }
     }
 
@@ -106,9 +106,9 @@ pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<
             }
         } else {
             // Keep original formatting if within width
-            output.push(item.bullet_line.text.clone());
+            output.push(item.bullet_line.text.trim_end().to_string());
             for cont in &item.continuation {
-                output.push(cont.text.clone());
+                output.push(cont.text.trim_end().to_string());
             }
         }
 
