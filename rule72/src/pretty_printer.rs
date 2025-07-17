@@ -46,7 +46,7 @@ pub fn pretty_print(doc: &Document, opts: &Options) -> String {
                 }
             }
             ContChunk::List(list_node) => {
-                output.extend(pretty_print_list(list_node, opts, 0));
+                output.extend(pretty_print_list(list_node, opts));
             }
         }
     }
@@ -62,8 +62,11 @@ pub fn pretty_print(doc: &Document, opts: &Options) -> String {
     output.join("\n") + "\n"
 }
 
-/// Pretty print a list node with proper indentation and wrapping
-pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<String> {
+/// Pretty print a list node with proper indentation and wrapping.
+///
+/// Nested lists are handled recursively. Indentation is preserved from the
+/// original text via `extract_bullet_prefix`, which retains leading whitespace.
+pub fn pretty_print_list(list: &ListNode, opts: &Options) -> Vec<String> {
     let mut output = Vec::new();
 
     // Print introduction lines first
@@ -114,7 +117,7 @@ pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<
 
         // Handle nested list
         if let Some(nested) = &item.nested {
-            output.extend(pretty_print_list(nested, opts, _depth + 1));
+            output.extend(pretty_print_list(nested, opts));
         }
     }
 
