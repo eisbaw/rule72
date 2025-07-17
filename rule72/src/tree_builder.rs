@@ -154,6 +154,7 @@ pub fn build_document(lines: Vec<CatLine>) -> Document {
     document
 }
 
+
 /// Parse a list without looking for introduction lines
 fn parse_list_simple(lines: &[CatLine], start: usize) -> (ListNode, usize) {
     let mut items = Vec::new();
