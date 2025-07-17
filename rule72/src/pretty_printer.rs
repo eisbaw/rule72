@@ -62,6 +62,7 @@ pub fn pretty_print(doc: &Document, opts: &Options) -> String {
     output.join("\n") + "\n"
 }
 
+
 /// Pretty print a list node with proper indentation and wrapping
 pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<String> {
     let mut output = Vec::new();

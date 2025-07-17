@@ -11,4 +11,8 @@ clap = { version = "4.4", features = ["derive"] }
 regex = "1"
 unicode-segmentation = "1.10"
 unicode-width = "0.1"
-anyhow = "1" 
+anyhow = "1"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "3.0"
