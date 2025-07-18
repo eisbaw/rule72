@@ -3,7 +3,7 @@ name = "rule72"
 version = "0.2.2"
 edition = "2021"
 authors = ["Mark Ruvald Pedersen"]
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
 description = "Git commit-message reflow CLI tool"
 
 [dependencies]
