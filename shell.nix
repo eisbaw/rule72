@@ -14,6 +14,10 @@ pkgs.mkShell {
     pkgs.colordiff
     pkgs.just
     pkgs.hyperfine
+
+    # Rust source code static analysis
+    pkgs.cargo-audit
+    pkgs.cargo-deny
   ];
   # RUSTFLAGS left empty for default glibc target; enable musl separately if needed
 } 

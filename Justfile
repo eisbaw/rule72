@@ -11,6 +11,12 @@ fmt:
 lint:
   (cd rule72 && cargo clippy -- -D warnings)
 
+audit:
+  (cd rule72 && cargo audit)
+
+deny:
+  (cd rule72 && cargo deny check)
+
 # Reflow all commit message .txt files under data/ into data.out/
 # Preserves directory structure for easy comparison.
 reflow-data: build
