@@ -97,14 +97,12 @@ pub fn generate_debug_svg(doc: &Document, path: &str) {
 
     let mut svg = String::new();
     svg.push_str(&format!(
-        r#"<svg xmlns="http://www.w3.org/2000/svg" width="{}" height="{}" viewBox="0 0 {} {}">"#,
-        svg_width, svg_height, svg_width, svg_height
+        r#"<svg xmlns="http://www.w3.org/2000/svg" width="{svg_width}" height="{svg_height}" viewBox="0 0 {svg_width} {svg_height}">"#
     ));
 
     svg.push_str("\n<style>\n");
     svg.push_str(&format!(
-        "    text {{ font-family: monospace; font-size: {}px; }}\n",
-        font_size
+        "    text {{ font-family: monospace; font-size: {font_size}px; }}\n"
     ));
     svg.push_str("    .headline { fill: #2e3440; }\n");
     svg.push_str("    .comment { fill: #616e88; }\n");
@@ -134,8 +132,7 @@ pub fn generate_debug_svg(doc: &Document, path: &str) {
             let dots_count = if chunk_type == &"headline" { 50 } else { 72 };
             let dots = "·".repeat(dots_count);
             svg.push_str(&format!(
-                r#"<text x="{}" y="{}" class="ruler-dots">{}</text>"#,
-                margin, ruler_y, dots
+                r#"<text x="{margin}" y="{ruler_y}" class="ruler-dots">{dots}</text>"#
             ));
         }
         prev_chunk_type = chunk_type;
@@ -191,7 +188,7 @@ pub fn generate_debug_svg(doc: &Document, path: &str) {
         let prob_text = line
             .probabilities
             .iter()
-            .map(|(cat, prob)| format!("  {:?}: {:.2}", cat, prob))
+            .map(|(cat, prob)| format!("  {cat:?}: {prob:.2}"))
             .collect::<Vec<_>>()
             .join("\n");
 
@@ -257,8 +254,7 @@ Probabilities:
         let label_x = margin + max_width * char_width - 5; // Near right edge
         let label_y = chunk_y + chunk_height - 3; // Near bottom edge
         svg.push_str(&format!(
-            r#"<text x="{}" y="{}" class="chunk-label" text-anchor="end">{}</text>"#,
-            label_x, label_y, chunk_type
+            r#"<text x="{label_x}" y="{label_y}" class="chunk-label" text-anchor="end">{chunk_type}</text>"#
         ));
     }
 
@@ -267,9 +263,9 @@ Probabilities:
     // Write to file
     if let Ok(mut file) = File::create(path) {
         let _ = file.write_all(svg.as_bytes());
-        eprintln!("Debug SVG written to: {}", path);
+        eprintln!("Debug SVG written to: {path}");
     } else {
-        eprintln!("Failed to create SVG file: {}", path);
+        eprintln!("Failed to create SVG file: {path}");
     }
 }
 
