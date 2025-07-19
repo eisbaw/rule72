@@ -64,7 +64,7 @@ fn main() -> Result<()> {
     io::stdin().read_to_string(&mut input)?;
 
     let output = reflow(&input, &opts);
-    print!("{}", output);
+    print!("{output}");
 
     Ok(())
 }

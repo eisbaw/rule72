@@ -89,7 +89,7 @@ pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<
         }
 
         // Check if wrapping is needed
-        let first_line = format!("{}{}", bullet_prefix, text_start);
+        let first_line = format!("{bullet_prefix}{text_start}");
         if display_width(&first_line) > opts.width
             || item
                 .continuation
@@ -99,10 +99,10 @@ pub fn pretty_print_list(list: &ListNode, opts: &Options, _depth: usize) -> Vec<
             let wrapped = wrap_text(&full_text, opts.width - bullet_width);
             for (i, line) in wrapped.iter().enumerate() {
                 if i == 0 {
-                    output.push(format!("{}{}", bullet_prefix, line));
+                    output.push(format!("{bullet_prefix}{line}"));
                 } else {
                     let padding = " ".repeat(bullet_width);
-                    output.push(format!("{}{}", padding, line));
+                    output.push(format!("{padding}{line}"));
                 }
             }
         } else {

@@ -43,7 +43,8 @@ pub fn lex_lines(lines: &[&str], opts: &Options) -> Vec<CatLine> {
                 probabilities.insert(Category::List, 0.92);
                 probabilities.insert(Category::ProseGeneral, 0.08);
             } else if indent >= 4
-                || count_special_chars(trimmed) as f32 / trimmed.len() as f32 > 0.3
+                || (!trimmed.is_empty()
+                    && count_special_chars(trimmed) as f32 / trimmed.len() as f32 > 0.3)
             {
                 probabilities.insert(Category::Code, 0.77);
                 probabilities.insert(Category::ProseGeneral, 0.23);
