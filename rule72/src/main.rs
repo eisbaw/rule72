@@ -14,7 +14,7 @@ use std::io::{self, Read};
 /// and outputs the result to stdout.
 fn main() -> Result<()> {
     let matches = Command::new("rule72")
-        .version("0.2.2")
+        .version(env!("CARGO_PKG_VERSION"))
         .about("Git commit message formatter")
         .arg(
             Arg::new("width")
